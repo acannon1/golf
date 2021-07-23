@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { useLocation } from "react-router-dom";
-import golfDbApi from './Authorize/GolfDbApi.js';
+import golfDbApi from './GolfDbApi.js';
 import './Golf.css';
 
 const Results = ({db=null}) => {
@@ -18,12 +18,14 @@ const Results = ({db=null}) => {
     .then((data) => {
         setResults(data);
     }); 
+
     golfDbApi.getCourse(db, location.state.course)
     .then((data) => {
         setPar(data);
         console.log(data)
     });
   }, [golfDbApi.getTournament]);
+
   var total = 0;
   return (
     <div id="tournament-results" className="results">

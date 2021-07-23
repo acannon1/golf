@@ -1,5 +1,5 @@
 import React from 'react';
-import golfDbApi from './Authorize/GolfDbApi.js';
+import golfDbApi from './GolfDbApi.js';
 import './Golf.css';
 
 const SignUp = ({db=null, signUps=[]}) => {

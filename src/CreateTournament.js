@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Select from 'react-select';
-import golfDbApi from './Authorize/GolfDbApi.js';
+import golfDbApi from './GolfDbApi.js';
 
 const CreateTournament = ({db=null, courses=[]}) => {
     const [date, setDate] = useState('');

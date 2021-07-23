@@ -14,7 +14,7 @@ import CreateGolfer from './CreateGolfer.js';
 import CreateTournament from './CreateTournament.js';
 import {auth, firestore} from './Authorize/Support.js';
 import firebase from 'firebase/app';
-import golfDbApi from './Authorize/GolfDbApi.js';
+import golfDbApi from './GolfDbApi.js';
 import './App.css';
 
 function App() {

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Select from 'react-select';
-import golfDbApi from './Authorize/GolfDbApi.js';
+import golfDbApi from './GolfDbApi.js';
 import './Golf.css';
 
 const ScoreCard = ({db=null, players=[], tournaments=[]}) => {

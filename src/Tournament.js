@@ -1,8 +1,5 @@
 import React from 'react';
 import { Link } from "react-router-dom";
-// import golfDbApi from './Authorize/GolfDbApi.js';
-// import { useDispatch } from 'react-redux'
-// import { updateResults } from './redux/resultsSlice'
 import './Golf.css';
 
 const Tournament = ({tournament}) => {
@@ -13,7 +10,6 @@ const Tournament = ({tournament}) => {
             <td className="tournament-data"> {tournament.course} </td>
             <td className="tournament-data">
                 <Link 
-                    // to="/results" params={outing.date}
                     to={{
                         pathname: "/results",
                         state: {
@@ -22,7 +18,11 @@ const Tournament = ({tournament}) => {
                         },
                     }}
                 >
-                    Results
+                    {tournament.played === true ? 
+                        <div>Results</div> :
+                        <div>Sign Up</div> 
+                    }
+                    {/* Results */}
                 </Link>
             </td>
         </tr>

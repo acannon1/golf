@@ -109,10 +109,22 @@ const golfDbApi = {
             "Date": date,
             "Results":{}
         };
-        const snapshot = await db.collection('Tournaments').doc(date).get();
-        snapshot.docs.map((doc) => {
-            data.Results[doc.id] = doc.data();
-        });
+
+        db.collection('Tournaments').doc(date).get()
+            .then((doc) => {
+                if (doc.exists) {
+                    Object.keys(doc.data()).forEach(key => {
+                        if((key !== 'course') && (key !== 'played') && (key !== 'signUp')) {
+                            data.Results[key] = doc.data()[key];
+                        }
+                    });
+                } else {
+                    console.log("No such document!");
+                }
+            }).catch((error) => {
+                console.log("Error getting document:", error);
+            });
+
         return(data);
     },
 
