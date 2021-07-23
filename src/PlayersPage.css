@@ -1,0 +1,48 @@
+#players-page{
+    text-align: center;
+}
+
+#players-page .title{
+    text-align: center
+}
+
+#players-page table{
+    border-collapse: collapse;
+    margin: 25px auto 25px auto;
+    font-size: 0.9em;
+    font-size: 14px;
+    font-family: sans-serif;
+    min-width: 80vw;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    color: #000;
+    text-align: left;
+}
+
+#players-page thead{
+    background-color: #bbbfc9;
+    color: #000;
+    font-size: 16px;
+}
+
+#players-page th, td{
+    padding: 12px 30px;
+}
+
+#players-page table tbody tr{
+    border-bottom: 1px solid #9a9a9a;
+}
+
+#players-page table tbody tr td a {
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    color: #000;
+}
+
+#players-page table tr:nth-child(odd){
+    background-color: #e3e4e8;
+}
+
+#players-page table tr:nth-child(even){
+    background-color: #f1f1f1;
+}
