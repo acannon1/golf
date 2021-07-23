@@ -49,11 +49,11 @@ const ScoreCard = ({db=null, players=[], tournaments=[]}) => {
         let temp = tournaments[e.value-1];
         setTournament(temp);
         setCourse(temp.course)
-        tournaments.map((obj) => {            
+        tournaments.map((obj) => {  
             if(obj.course === temp.course) {
                 setDate(obj.date)
                 let temp2 = []
-                obj.signUp.map((pl, idx) => {
+                obj.signUpList.map((pl, idx) => {
                     temp2.push({label: pl, value: idx+1});
                 })
                 setOptGolfers(temp2)

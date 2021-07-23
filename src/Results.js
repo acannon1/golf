@@ -22,7 +22,6 @@ const Results = ({db=null}) => {
     golfDbApi.getCourse(db, location.state.course)
     .then((data) => {
         setPar(data);
-        console.log(data)
     });
   }, [golfDbApi.getTournament]);
 
@@ -56,18 +55,20 @@ const Results = ({db=null}) => {
           </tr>
         {
           Object.keys(results.Results).map((player, index) => {
-            return(
-              <tr  key={index}>
-                <td> {player} </td>
-                {
-                  results.Results[player].map((score, idx) => {
-                    return(
-                      <td key={idx}>{score}</td>
-                    )
-                  })
-                }
-              </tr>
-            )
+            if(player !== 'signUpList') {
+              return(
+                <tr  key={index}>
+                  <td> {player} </td>
+                  {
+                    results.Results[player].map((score, idx) => {
+                      return(
+                        <td key={idx}>{score}</td>
+                      )
+                    })
+                  }
+                </tr>
+              )
+            }
           })
         }
         </tbody>

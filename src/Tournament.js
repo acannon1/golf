@@ -9,21 +9,27 @@ const Tournament = ({tournament}) => {
             <td className="tournament-data"> {tournament.date} </td>
             <td className="tournament-data"> {tournament.course} </td>
             <td className="tournament-data">
-                <Link 
-                    to={{
-                        pathname: "/results",
-                        state: {
-                            date: tournament.date,
-                            course: tournament.course,
-                        },
-                    }}
-                >
                     {tournament.played === true ? 
-                        <div>Results</div> :
-                        <div>Sign Up</div> 
+                        <Link 
+                            to={{
+                                pathname: "/results",
+                                state: {
+                                    date: tournament.date,
+                                    course: tournament.course,
+                                },
+                            }}
+                        >
+                            Results 
+                        </Link> : 
+                        <Link 
+                            to={{
+                                pathname: "/sign-up",
+                            }}
+                        >
+                            Sign Up 
+                        </Link>
                     }
                     {/* Results */}
-                </Link>
             </td>
         </tr>
     );

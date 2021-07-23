@@ -66,6 +66,32 @@ const golfDbApi = {
             });
     },
 
+    async getGolferInfo(db, user){
+        let temp = {};
+        // db.collection('Golfers').doc(user)
+        //     .get()
+        //         .then((doc) => {
+        //             if (doc.exists) {
+        //                 temp = { ...doc.data()}
+        //             } else {
+        //                 console.log("No such document!");
+        //             }
+        //         }).catch((error) => {
+        //             console.log("Error getting document:", error);
+        //         });
+
+            const snapshot = await db.collection('Golfers').doc(user).get();
+            return(snapshot.data())
+        // const snapshot = await db.collection('Golfers')
+        //     .where("userInfo","==",user.uid)
+        //     .get();
+        //     console.log(doc.data())
+        // snapshot.docs.map((doc) => {
+        //     temp = [...doc.data().par];
+        // });
+        // return temp;
+    },
+
     async getGolfers (db) {
         let golfers = [];
         const snapshot = await db.collection('Golfers').get();
@@ -128,7 +154,7 @@ const golfDbApi = {
         return(data);
     },
 
-    async getSignUp(db) {
+    async getUpcomingTournaments(db) {
         let tournaments = [];
         const snapshot = await db.collection('Tournaments')
             .where("played", "==", false)
@@ -145,7 +171,7 @@ const golfDbApi = {
         console.log("handleSignUp")   
         db.collection('Tournaments').doc(date)
             .update({
-                signUp: firebase.firestore.FieldValue.arrayUnion( name )
+                signUpList: firebase.firestore.FieldValue.arrayUnion( name )
             })
             .then(() => {
                 console.log("done")

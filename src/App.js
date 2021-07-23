@@ -19,24 +19,29 @@ import './App.css';
 
 function App() {
   const [user, setUser] = useState(() => auth.currentUser);
+  const [user2, setUser2] = useState({});
   const [initializing, setInitializing] = useState(true);
   const [golfers, setGolfers] = useState([]);
   const [courses, setCourses] = useState([]);
   const [tournaments, setTournaments] = useState([]);
-  const [signUps, setSignUps] = useState([]);
+  const [upcomingTournaments, setUpcomingTournaments] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user) {
-        setUser(user);
+    const unsubscribe = auth.onAuthStateChanged(userInfo => {
+      if (userInfo) {
+        setUser(userInfo);
+        if(userInfo !== null) {
+          golfDbApi.getGolferInfo(firestore, userInfo.email)
+            .then((data) => setUser2(data));
+        }
         golfDbApi.getGolfers(firestore)
           .then((data) => setGolfers(data));
         golfDbApi.getCourses(firestore)
           .then((data) => setCourses(data));
         golfDbApi.getTournaments(firestore)
           .then((data) => setTournaments(data));
-        golfDbApi.getSignUp(firestore)
-          .then((data) => setSignUps(data));
+        golfDbApi.getUpcomingTournaments(firestore)
+          .then((data) => setUpcomingTournaments(data));
       } else {
         setUser(null);
       }
@@ -71,6 +76,7 @@ function App() {
           <Header/>
           <button onClick={signIn}>Sign In</button>
           <button onClick={signOut}>Sign Out</button>
+          {user !== null ? <div> {user.email} </div> : null}
           <SideBar/>
           <div className="temp">
             <Switch>
@@ -82,7 +88,7 @@ function App() {
               <Route path="/create-golfer"> <CreateGolfer db={firestore}/> </Route>
               <Route path="/create-tournament"> <CreateTournament db={firestore} courses={courses}/> </Route>
               <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
-              <Route path="/sign-up"> <SignUp db={firestore} signUps={signUps}/> </Route>
+              <Route path="/sign-up"> <SignUp db={firestore} upcomingTournaments={upcomingTournaments} user={user2}/> </Route>
               <Route path="/"> <Home db={firestore}/> </Route>
               {/* <Route component={} /> */}
             </Switch>
