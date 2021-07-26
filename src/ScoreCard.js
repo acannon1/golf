@@ -3,71 +3,76 @@ import Select from 'react-select';
 import golfDbApi from './GolfDbApi.js';
 import './Golf.css';
 
-const ScoreCard = ({db=null, players=[], tournaments=[]}) => {
-    const [score, setScore] = useState(['','','','','','','','','','','','','','','','','','','']);
-    const [total, setTotal] = useState(0);
+const ScoreCard = ({db=null}) => {
+    const [scores, setScores] = useState(['','','','','','','','','','','','','','','','','','','']);
     const [player, setPlayer] = useState('');
-    const [tournament, setTournament] = useState('');
     const [date, setDate] = useState('');
     const [course, setCourse] = useState('');
     const [optGolfers, setOptGolfers] = useState([]);
-    const optPlayer=[];
-    const optTournament=[];
+    const [caption, setCaption] = useState('');
+     
+
+    const ref = db.collection("Tournaments").where("status", "==", "In Progress");
+
+    const getTournaments = () => {
+      ref.onSnapshot((querySnapshot) => {
+        let ref = querySnapshot.docs[0].data();
+        setCaption(ref.date + ' at ' + ref.course);
+        setDate(ref.date)
+        setCourse(ref.course)
+
+        const items = [];
+        ref.signUpList.map((player, idx) => {
+            items.push({label: player, value: idx+1});
+        })
+        setOptGolfers(items)
+      }, (error) => {
+          console.log(error)
+      })
+    }
 
     useEffect(() => {
-        // players.map((player, idx) => {
-        //     optPlayer.push({label: player.name, value: idx+1});
-        // })
-        tournaments.map((tournament, idx) => {
-            optTournament.push(
-                {label: tournament.date + ' at ' + tournament.course,
-                value: idx+1}
-            );
-        })
-    })
+        getTournaments();
+    }, [])
 
     const handleKeyPress = (e) => {
         if(/^\d+$/.test(e.key)) {
-            let newArray = [...score];
-            setTotal(total + parseInt(e.key))
-            newArray[18] = total;
+            const newArray = [...scores];
         }
     }
 
     const handleScore = (e) => {
-        let newArray = [...score];
-        newArray[parseInt(e.target.id-1)] = e.target.value;
-        newArray[18] = total;
-        setScore(newArray);
-    }
-
-    const saveScores = () => {  
-        golfDbApi.saveRound(db, player, score, date);  
-    }
-
-    const handleSelectTournament = (e) => {
-        let temp = tournaments[e.value-1];
-        setTournament(temp);
-        setCourse(temp.course)
-        tournaments.map((obj) => {  
-            if(obj.course === temp.course) {
-                setDate(obj.date)
-                let temp2 = []
-                obj.signUpList.map((pl, idx) => {
-                    temp2.push({label: pl, value: idx+1});
-                })
-                setOptGolfers(temp2)
+        let newArray = [...scores];
+        newArray[parseInt(e.target.id)] = e.target.value;
+          
+        var tempTotal = 0;
+        newArray.map((s, idx) => {
+            if(idx !== 18) {
+                if(s !== "") {
+                    tempTotal += parseInt(s)
+                }
             }
-        });
+        })
+
+        newArray[18] = String(tempTotal);
+        setScores(newArray);
     }
 
     const handleSelectPlayer = (e) => {
         setPlayer(e.label);
+        golfDbApi.getPlayerScore(db, date, course, e.label)
+            .then((data) => {
+                setScores(data)
+            });
+    }
+
+    const saveScores = () => {  
+        golfDbApi.saveRound(db, player, scores, date);  
     }
 
     const hole = () => {
         let temp=[];
-        score.map((score, idx) => {
+        scores.map((score, idx) => {
             temp.push(
                 <div key={idx} className="score-card-column">
                     {idx !== 18 ? 
@@ -75,7 +80,7 @@ const ScoreCard = ({db=null, players=[], tournaments=[]}) => {
                         <div className="score-card-hole">Tot</div>
                     }                    
                     <input 
-                        id={idx+1}
+                        id={idx}
                         className="score-card-score"
                         type="number"
                         onKeyPress={e => handleKeyPress(e)}
@@ -91,10 +96,9 @@ const ScoreCard = ({db=null, players=[], tournaments=[]}) => {
         <div className="score-card">
             <h3> Score Card </h3>
             {/* <div className="score-card-title">Score Card</div> */}
-            <div className="score-card-date">{date}</div>
-            <div className="score-card-course">
-                <Select options={ optTournament } onChange={e=>handleSelectTournament(e)}/>
-            </div>
+            {/* <div className="score-card-course"> */}
+            <h4>{caption}</h4>
+            {/* </div> */}
             <div className="score-card-select-player">
                 <Select options={ optGolfers } onChange={e=>handleSelectPlayer(e)}/>
             </div>

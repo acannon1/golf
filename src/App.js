@@ -5,8 +5,7 @@ import Home from './Home.js';
 import ScoreCard from './ScoreCard.js';
 import SignUp from './SignUp.js';
 import PlayerPage from './PlayerPage.js';
-import Handicap from './Handicap.js';
-import Golf from './Golf.js';
+import Tournaments from './Tournaments.js';
 import Header from './Header.js';
 import Results from './Results.js';
 import CreateCourse from './CreateCourse.js';
@@ -38,10 +37,10 @@ function App() {
           .then((data) => setGolfers(data));
         golfDbApi.getCourses(firestore)
           .then((data) => setCourses(data));
-        golfDbApi.getTournaments(firestore)
-          .then((data) => setTournaments(data));
-        golfDbApi.getUpcomingTournaments(firestore)
-          .then((data) => setUpcomingTournaments(data));
+        // golfDbApi.getTournaments(firestore)
+        //   .then((data) => setTournaments(data));
+        // golfDbApi.getUpcomingTournaments(firestore)
+        //   .then((data) => setUpcomingTournaments(data));
       } else {
         setUser(null);
       }
@@ -74,21 +73,28 @@ function App() {
     <Router>
       <div className="app-container">
           <Header/>
-          <button onClick={signIn}>Sign In</button>
-          <button onClick={signOut}>Sign Out</button>
-          {user !== null ? <div> {user.email} </div> : null}
+          {user === null ?
+            <button onClick={signIn}>Sign In</button> :             
+            <div>
+              <button onClick={signOut}>Sign Out</button>
+              {(Object.keys(user2).length === 0 && user2.constructor === Object) ?
+                null :
+                user2.name.split(' ').slice(0, 1).join(' ')
+              }
+            </div>
+          }
           <SideBar/>
           <div className="temp">
             <Switch>
-              <Route path="/score-card"> <ScoreCard db={firestore} players={golfers} tournaments={tournaments}/> </Route>
+              <Route path="/score-card"> <ScoreCard db={firestore} players={golfers}/> </Route>
               <Route path="/players"> <PlayerPage players={golfers}/> </Route>
-              <Route path="/tournaments"> <Golf db={firestore} tournaments={tournaments}/> </Route>
+              <Route path="/tournaments"> <Tournaments db={firestore}/> </Route>
               <Route path="/results"> <Results db={firestore}/> </Route>
               <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
               <Route path="/create-golfer"> <CreateGolfer db={firestore}/> </Route>
               <Route path="/create-tournament"> <CreateTournament db={firestore} courses={courses}/> </Route>
               <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
-              <Route path="/sign-up"> <SignUp db={firestore} upcomingTournaments={upcomingTournaments} user={user2}/> </Route>
+              <Route path="/sign-up"> <SignUp db={firestore} user={user2}/> </Route>
               <Route path="/"> <Home db={firestore}/> </Route>
               {/* <Route component={} /> */}
             </Switch>
