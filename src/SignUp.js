@@ -41,9 +41,9 @@ const SignUp = ({db=null, user={}}) => {
               }
               <ul>
               <h4>Signed Up</h4>
-                {tournament.signUpList.map((golfers) => {
+                {tournament.signUpList.map((golfers, idx) => {
                   return(
-                    <li>{golfers}</li>
+                    <li key={idx}>{golfers}</li>
                   )
                 })}
               </ul>

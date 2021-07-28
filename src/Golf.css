@@ -245,7 +245,7 @@ table tr:nth-child(even){
 }
 
 .score-card-score {
-    /* background-color: #fff; */
+    background-color: #fff;
     border: 1px solid #333;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
@@ -276,4 +276,40 @@ table tr:nth-child(even){
     font-size: 16px;
     height:24px;
     width: 300px;
+}
+
+.enter-score {
+    display: flex;
+}
+
+.select-player{
+    display: flex;
+    border: 2px solid #333;
+}
+
+.select-player .list-players{
+    display: flex;
+}
+
+.list-players .player {
+    margin-right: 20px;
+    font-weight: bold;
+}
+
+.player-pool{
+    display: flex;
+}
+
+.player-available {
+    border: 2px solid red;
+    width: 300px;
+}
+
+.player-select {
+    border: 2px solid blue;
+    width: 300px;
+}
+
+.alan{
+    width: 40px;
 }

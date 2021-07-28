@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import './Golf.css';
 
-const EnterScore = ({hole=1, par=4, player=""}) => {
-    const [score, setScore] = useState(par);
+const EnterScore = ({score, par=4, player, setScore}) => {
+    // const [score, setScore] = useState(par);
 
     return(
         <div className="enterScore">

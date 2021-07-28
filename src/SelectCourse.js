@@ -7,3 +7,5 @@ const SelectCourse = () => {
         </div>
     )
 }
+
+export default SelectCourse;

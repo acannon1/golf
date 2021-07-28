@@ -6,20 +6,26 @@ const SideBar = () => {
     return(        
         <div className="side-nav">
             <ul className="nav-links">
-                <li>
+                {/* <li>
                     <Link to="/">Home</Link>
-                </li>
-                <li>
+                </li> */}
+                {/* <li>
                     <Link to="/news">News</Link>
-                </li>
+                </li> */}
                 <li>
                     <Link to="/sign-up">Sign Up</Link>
                 </li>
                 <li>
                     <Link to="/tournaments">Tournaments</Link>
                 </li>
-                <li>
+                {/* <li>
                     <Link to="/players">Tour Players</Link>
+                </li> */}
+                <li>
+                    <Link to="/play">Play</Link>
+                </li>
+                <li>
+                    <Link to="/leaderboard">Leaderboard</Link>
                 </li>
                 <li>
                     <Link to="/score-card">Score Card</Link>

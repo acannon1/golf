@@ -10,9 +10,9 @@ const Tournaments = ({db}) => {
     const getTournaments = () => {
         ref.onSnapshot((querySnapshot) => {
             const items = [];
-            querySnapshot.docs.map((doc) => {
+            querySnapshot.docs.map((doc) => 
                 items.push(doc.data())
-            });
+            );
             setTournaments(items);
         }, (error) => {
             console.log(error)

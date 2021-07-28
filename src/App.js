@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import { BrowserRouter as Router,Switch, Route } from "react-router-dom";
 import SideBar from './SideBar.js';
 import Home from './Home.js';
@@ -7,10 +7,11 @@ import SignUp from './SignUp.js';
 import PlayerPage from './PlayerPage.js';
 import Tournaments from './Tournaments.js';
 import Header from './Header.js';
-import Results from './Results.js';
+import Play from './Play.js';
 import CreateCourse from './CreateCourse.js';
 import CreateGolfer from './CreateGolfer.js';
 import CreateTournament from './CreateTournament.js';
+import Leaderboard from './Leaderboard.js';
 import {auth, firestore} from './Authorize/Support.js';
 import firebase from 'firebase/app';
 import golfDbApi from './GolfDbApi.js';
@@ -22,8 +23,6 @@ function App() {
   const [initializing, setInitializing] = useState(true);
   const [golfers, setGolfers] = useState([]);
   const [courses, setCourses] = useState([]);
-  const [tournaments, setTournaments] = useState([]);
-  const [upcomingTournaments, setUpcomingTournaments] = useState([]);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(userInfo => {
@@ -37,10 +36,6 @@ function App() {
           .then((data) => setGolfers(data));
         golfDbApi.getCourses(firestore)
           .then((data) => setCourses(data));
-        // golfDbApi.getTournaments(firestore)
-        //   .then((data) => setTournaments(data));
-        // golfDbApi.getUpcomingTournaments(firestore)
-        //   .then((data) => setUpcomingTournaments(data));
       } else {
         setUser(null);
       }
@@ -49,7 +44,7 @@ function App() {
       }
     })
     return unsubscribe;
-  }, [golfDbApi.getGolfers, golfDbApi.getCourses, golfDbApi.getTournaments]);
+  }, [golfDbApi.getGolfers, golfDbApi.getCourses]);
 
   const signIn = async () => {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -89,7 +84,9 @@ function App() {
               <Route path="/score-card"> <ScoreCard db={firestore} players={golfers}/> </Route>
               <Route path="/players"> <PlayerPage players={golfers}/> </Route>
               <Route path="/tournaments"> <Tournaments db={firestore}/> </Route>
-              <Route path="/results"> <Results db={firestore}/> </Route>
+              <Route path="/play"> <Play db={firestore}/> </Route>
+              <Route path="/leaderboard"> <Leaderboard db={firestore}/> </Route>
+              {/* <Route path="/play"> <Results db={firestore}/> </Route> */}
               <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
               <Route path="/create-golfer"> <CreateGolfer db={firestore}/> </Route>
               <Route path="/create-tournament"> <CreateTournament db={firestore} courses={courses}/> </Route>
