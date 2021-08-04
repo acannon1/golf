@@ -69,7 +69,12 @@ function App() {
       <div className="app-container">
           <Header/>
           {user === null ?
-            <button onClick={signIn}>Sign In</button> :             
+            <div className="log-in">
+              <div> Welcome to the STGA. Please log in. </div>
+              <button onClick={signIn}>Log In</button>
+              <button onClick={signIn}>Create Account</button>
+            </div>
+            :             
             <div>
               <button onClick={signOut}>Sign Out</button>
               {(Object.keys(user2).length === 0 && user2.constructor === Object) ?
@@ -78,24 +83,30 @@ function App() {
               }
             </div>
           }
-          <SideBar/>
-          <div className="temp">
-            <Switch>
-              {/* <Route path="/score-card"> <ScoreCard db={firestore} players={golfers}/> </Route> */}
-              <Route path="/players"> <PlayerPage players={golfers}/> </Route>
-              <Route path="/tournaments"> <Tournaments db={firestore}/> </Route>
-              <Route path="/score-card"> <ScoreCard db={firestore}/> </Route>
-              <Route path="/leaderboard"> <Leaderboard db={firestore}/> </Route>
-              {/* <Route path="/play"> <Results db={firestore}/> </Route> */}
-              <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
-              <Route path="/create-golfer"> <CreateGolfer db={firestore}/> </Route>
-              <Route path="/create-tournament"> <CreateTournament db={firestore} courses={courses}/> </Route>
-              <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
-              <Route path="/sign-up"> <SignUp db={firestore} user={user2}/> </Route>
-              <Route path="/"> <Home db={firestore}/> </Route>
-              {/* <Route component={} /> */}
-            </Switch>
-          </div>
+          {user !== null ?
+            <div>
+              <SideBar/>
+                <div className="temp">
+                    <Switch>
+                      {/* <Route path="/score-card"> <ScoreCard db={firestore} players={golfers}/> </Route> */}
+                      <Route path="/players"> <PlayerPage players={golfers}/> </Route>
+                      <Route path="/tournaments"> <Tournaments db={firestore}/> </Route>
+                      <Route path="/score-card"> <ScoreCard db={firestore}/> </Route>
+                      <Route path="/leaderboard"> <Leaderboard db={firestore}/> </Route>
+                      {/* <Route path="/play"> <Results db={firestore}/> </Route> */}
+                      <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
+                      <Route path="/create-golfer"> <CreateGolfer db={firestore}/> </Route>
+                      <Route path="/create-tournament"> <CreateTournament db={firestore} courses={courses}/> </Route>
+                      <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
+                      <Route path="/sign-up"> <SignUp db={firestore} user={user2}/> </Route>
+                      <Route path="/"> <Home db={firestore}/> </Route>
+                      {/* <Route component={} /> */}
+                    </Switch>
+                </div>
+            </div>
+            :
+            <div></div>
+          }
         </div>
     </Router>
   );
