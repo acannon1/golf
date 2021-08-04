@@ -1,7 +1,28 @@
 import firebase from 'firebase/app';
 
 const golfDbApi = {
+    async saveScoreRealTime(db, date, player, scoreCard) {
+        const query = await db.collection('Tournaments')
+            .where('date', '==', date).get();
+
+        if (!query.empty) {
+            const snapshot = query.docs[0];
+            db.collection("Tournaments").doc(snapshot.id)
+                .update({[player]: scoreCard})
+                .then(() =>
+                    console.log("done")
+                )
+                .catch((error) => {
+                    console.error("Error writing document: ", error);
+                })
+
+        } else {
+            console.log("document not found")
+        }
+    },
+
     async saveRound(db, player, score, date) {
+        console.log(score)
         // Make the initial query
         const query = await db.collection('Tournaments')
             .where('date', '==', date).get();
@@ -93,6 +114,33 @@ const golfDbApi = {
         });
     },
 
+    async signUp(db, date, name) {
+        const snapshot = await db.collection('Tournaments')
+            .where("status", "==", "Sign Up")
+            .get();
+
+        //Map thru each document
+        snapshot.docs.map((doc) => {
+            // let scoreCard = new Array(19).fill(0)
+            let scoreCard = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+            //Find document match to date
+            if(doc.data().date === date) {
+                //Update sign-up list
+                db.collection('Tournaments').doc(doc.id)
+                    .update({
+                        signUpList: firebase.firestore.FieldValue.arrayUnion( name ),
+                        [name]: scoreCard
+                    })
+                    .then(() => {
+                        console.log("done")
+                    })
+                    .catch((error) => {
+                        console.error("Error writing document: ", error);
+                    });
+            }
+        });
+    },
+
     async getGolferInfo(db, user){
         let temp = {};
         // db.collection('Golfers').doc(user)
@@ -142,8 +190,20 @@ const golfDbApi = {
             tournaments.push(doc.data())
         });
         return tournaments;
-    },
+    }, 
 
+    async getCurrentTournament(db) {
+        let tournament = {};
+        const snapshot = await db.collection('Tournaments').get();
+        snapshot.docs.map((doc) => {
+            if(doc.data().status === "In Progress") {
+                tournament = doc.data();
+                
+            }
+        });
+        return tournament;
+    },
+    
     async getCourse(db, course) {
         let temp = {};
 
@@ -225,32 +285,6 @@ const golfDbApi = {
         }
         
         return([]);
-    },
-
-    async signUp(db, date, name) {
-        const snapshot = await db.collection('Tournaments')
-            .where("status", "==", "Sign Up")
-            .get();
-
-            //Map thru each document
-        snapshot.docs.map((doc) => {
-            //Find document match to date
-            if(doc.data().date === date) {
-                console.log(doc.data())
-                console.log(doc.id)
-                //Update sign-up list
-                db.collection('Tournaments').doc(doc.id)
-                    .update({
-                        signUpList: firebase.firestore.FieldValue.arrayUnion( name )
-                    })
-                    .then(() => {
-                        console.log("done")
-                    })
-                    .catch((error) => {
-                        console.error("Error writing document: ", error);
-                    });
-            }
-        });
     }
 }
 

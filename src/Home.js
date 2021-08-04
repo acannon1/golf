@@ -1,5 +1,5 @@
 import React from 'react';
-import EnterScore from './EnterScore.js';
+// import EnterScore from './EnterScore.js';
 import './Golf.css';
 
 const Home = () => {

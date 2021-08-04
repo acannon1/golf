@@ -39,7 +39,7 @@ const Results = ({db=null}) => {
                 return( <th key={idx}>{idx+1}</th> )
               })
             }
-            <th>Total</th>
+            <th>Tot</th>
           </tr>
         </thead>
         <tbody>

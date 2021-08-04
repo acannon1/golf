@@ -1,0 +1,71 @@
+.enter-score{
+    /* display: flex; */
+  height: 170px;
+  width: 220px;
+  background-color: #E0E0E0;
+  margin: auto;
+  padding: 30px
+  /* text-align: center;  */
+}
+
+.es-group{
+    /* display: inline-flex; */
+}
+
+.es-group .es-score{
+    height: 40px;
+    width: 40px;
+    font-size: 36px;
+    font-weight: bold;
+    background-color: #fff;
+    color: #000;
+    padding: 10px 10px;
+    margin: 15px 15px;
+    border-radius: 10px;
+    display: inline-flex;
+}
+
+.es-group .red{
+    color: #ff0000;
+}
+
+.es-adjust-score {
+    /* display: inline-flex; */
+    /* flex-direction: column; */
+}
+
+.es-adjust-score button{
+    height: 28px;
+    width: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.es-group button{
+    height: 28px;
+    width: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.es-adjust-hole{
+    display: inline-flex;
+    font-size: 24px;
+    font-weight: bold;
+    color: black;
+}
+
+.es-adjust-hole button{
+    margin: 0 15px;
+}
+
+.es-adjust-hole2{
+    margin: auto;
+    /* display: inline-flex; */
+}
+
+.es-hole {
+    min-width: 100px;
+}

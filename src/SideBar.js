@@ -18,17 +18,17 @@ const SideBar = () => {
                 <li>
                     <Link to="/tournaments">Tournaments</Link>
                 </li>
-                {/* <li>
-                    <Link to="/players">Tour Players</Link>
-                </li> */}
                 <li>
-                    <Link to="/play">Play</Link>
+                    <Link to="/players">Tour Players</Link>
+                </li>
+                <li>
+                    <Link to="/score-card">Score Card</Link>
                 </li>
                 <li>
                     <Link to="/leaderboard">Leaderboard</Link>
                 </li>
                 <li>
-                    <Link to="/score-card">Score Card</Link>
+                    {/* <Link to="/score-card">Score Card</Link> */}
                 </li>
                 <li>
                     <Link to="/create-course">Create Course</Link>

@@ -7,7 +7,7 @@ import SignUp from './SignUp.js';
 import PlayerPage from './PlayerPage.js';
 import Tournaments from './Tournaments.js';
 import Header from './Header.js';
-import Play from './Play.js';
+// import Play from './Play.js';
 import CreateCourse from './CreateCourse.js';
 import CreateGolfer from './CreateGolfer.js';
 import CreateTournament from './CreateTournament.js';
@@ -81,10 +81,10 @@ function App() {
           <SideBar/>
           <div className="temp">
             <Switch>
-              <Route path="/score-card"> <ScoreCard db={firestore} players={golfers}/> </Route>
+              {/* <Route path="/score-card"> <ScoreCard db={firestore} players={golfers}/> </Route> */}
               <Route path="/players"> <PlayerPage players={golfers}/> </Route>
               <Route path="/tournaments"> <Tournaments db={firestore}/> </Route>
-              <Route path="/play"> <Play db={firestore}/> </Route>
+              <Route path="/score-card"> <ScoreCard db={firestore}/> </Route>
               <Route path="/leaderboard"> <Leaderboard db={firestore}/> </Route>
               {/* <Route path="/play"> <Results db={firestore}/> </Route> */}
               <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>

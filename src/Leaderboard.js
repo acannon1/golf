@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import golfDbApi from './GolfDbApi.js';
-import './Golf.css';
+import './Leaderboard.css';
 
 const Results = ({db=null}) => {
   const [results, setResults] = useState({
@@ -22,6 +22,8 @@ const Results = ({db=null}) => {
 
         ref.onSnapshot((querySnapshot) => {
           let ref = querySnapshot.docs[0].data();
+          data.Course = ref.course;
+          data.Date = ref.date;
           Object.keys(ref).forEach(key => {
               if((key !== 'course') && (key !== 'date') &&(key !== 'status') && (key !== 'signUpList')) {
                   data.Results[key] = ref[key];
@@ -30,6 +32,7 @@ const Results = ({db=null}) => {
           
           db.collection("Courses").where("name", "==", ref.course).get()
             .then(value => setPar(value.docs[0].data()['par']))
+
           setResults(data);
         }, (error) => {
             console.log(error)
@@ -42,7 +45,7 @@ const Results = ({db=null}) => {
 
   var total = 0;
   return (
-    <div id="tournament-results" className="results">
+    <div id="leader-board">
       <h2> {results.Course}</h2>
       <h4> {results.Date}</h4>
       <table>
@@ -54,7 +57,7 @@ const Results = ({db=null}) => {
                 return( <th key={idx}>{idx+1}</th> )
               })
             }
-            <th>Total</th>
+            <th>Tot</th>
           </tr>
         </thead>
         <tbody>
@@ -75,7 +78,18 @@ const Results = ({db=null}) => {
                     <td> {player} </td>
                     {
                         results.Results[player].map((score, idx) => {
-                            return(<td key={idx}>{score}</td>)
+                            return(
+                              <td 
+                                key={idx} 
+                                className=
+                                  {score < par[index] ? 
+                                    score !== 0 ? 
+                                      "leader-board red" :
+                                      null : 
+                                      null}
+                              >
+                                {score !== 0 ? score : null}
+                              </td>)
                         })
                     }
                 </tr>
