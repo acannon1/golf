@@ -2,12 +2,12 @@ const initState = {
     pool: [],
     selected: [],
     foursome: {},
-    start: false,
+    startRound: false,
     currentPlayer: '',
 }
 
 const foursomeReducer = (state = initState, action) => {
-    const { pool, selected, foursome, start, currentPlayer } = state;
+    const { pool, selected, foursome, currentPlayer } = state;
     const newPool = [...pool];
     const newFoursome = {...foursome};
     const newSelected = [...selected];
@@ -20,7 +20,6 @@ const foursomeReducer = (state = initState, action) => {
             };
 
         case 'SELECT_PLAYER':
-            // newFoursome[pool[action.payload]] = new Array(19)
             newFoursome[pool[action.payload]] = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
             newSelected.push(pool[action.payload]);
             newPool.splice(action.payload, 1);
@@ -45,10 +44,9 @@ const foursomeReducer = (state = initState, action) => {
             };
             
         case 'START_ROUND':
-            console.log(action.payload)
             return {
                 ...state,
-                start: action.payload.start,
+                startRound: action.payload.startRound,
                 currentPlayer: action.payload.player
             };
             

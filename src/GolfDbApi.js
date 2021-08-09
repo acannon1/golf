@@ -1,4 +1,5 @@
 import firebase from 'firebase/app';
+// import Moment from 'react-moment';
 
 const golfDbApi = {
     async saveScoreRealTime(db, date, player, scoreCard) {
@@ -238,7 +239,7 @@ const golfDbApi = {
         return(data);
     },
 
-    async getUpcomingTournaments(db) {
+    async getFutureTournaments(db) {
         let tournaments = [];
         const snapshot = await db.collection('Tournaments')
             .where("status", "==", "Sign Up")
@@ -285,6 +286,37 @@ const golfDbApi = {
         }
         
         return([]);
+    },
+
+    async getRealTimeScores(db) {        
+        let data = {
+            "Course": '',
+            "Date": '',
+            "Results":{},
+            "Par":{}
+        };
+
+        const ref = db.collection("Tournaments").where("status", "==", "In Progress");
+    
+        ref.onSnapshot((querySnapshot) => {
+          let ref = querySnapshot.docs[0].data();
+          data.Course = ref.course;
+          data.Date = ref.date;
+          Object.keys(ref).forEach(key => {
+              if((key !== 'course') && (key !== 'date') &&(key !== 'status') && (key !== 'signUpList')) {
+                  data.Results[key] = ref[key];
+              }
+          });
+          
+        //   db.collection("Courses").where("name", "==", ref.course).get()
+        //     .then(value => setPar(value.docs[0].data()['par']))
+    console.log(data)
+          return(data);
+        }, (error) => {
+            console.log(error)
+        })
+        // console.log(data)
+        return(data);
     }
 }
 

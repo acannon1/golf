@@ -7,9 +7,9 @@ const Results = ({db=null}) => {
     "Course": "Hilton Head",
     "Date": "September 11, 2018",
     "Results":{
-      "Par": [5,3,4,4,4,4,5,3,4],
+      "Par": [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
       "Alan Cannon": [4,3,4,4,5,4,4,2,4],}});
-    const [par, setPar] = useState([])
+    const [par, setPar] = useState([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])
 
     const ref = db.collection("Tournaments").where("status", "==", "In Progress");
 
@@ -33,15 +33,17 @@ const Results = ({db=null}) => {
           db.collection("Courses").where("name", "==", ref.course).get()
             .then(value => setPar(value.docs[0].data()['par']))
 
-          setResults(data);
+            setResults(data);
         }, (error) => {
             console.log(error)
         })
   }
 
     useEffect(() => {
+        // golfDbApi.getRealTimeScores(db)
+        //   .then((data) => {console.log(data); setResults(data)});
         getResults();
-    }, [])
+    }, {})
 
   var total = 0;
   return (

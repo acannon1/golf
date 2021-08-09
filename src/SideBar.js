@@ -6,9 +6,9 @@ const SideBar = () => {
     return(        
         <div className="side-nav">
             <ul className="nav-links">
-                {/* <li>
+                <li>
                     <Link to="/">Home</Link>
-                </li> */}
+                </li>
                 {/* <li>
                     <Link to="/news">News</Link>
                 </li> */}

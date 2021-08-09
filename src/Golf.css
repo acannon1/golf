@@ -17,11 +17,20 @@
   width: 100vw;
   min-height: 10vh;
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.stga-title{
+    width: 80%;
+    text-align: center
+}
+
+.sign-out-btn{
+    width: 20%;
 }
 
 .container-golf{
@@ -315,23 +324,38 @@ table tr:nth-child(even){
 }
 
 .player-pool{
+    /* display: flex; */
+}
+
+.player-pool-container {
     display: flex;
 }
 
-.player-available {
-    border: 2px solid red;
-    width: 300px;
+.player-pool .sides {
+    width: 50%;
+    height: 500px;
 }
 
-.player-select {
-    border: 2px solid blue;
-    width: 300px;
+.player-pool .left-side {
+    border-right: 5px solid #1d5276;
+}
+
+.player-pool .names {
+    cursor: pointer;
+}
+
+.select-titles {
+    margin-bottom: 20px;
+    font-weight: 700;
 }
 
 .alan{
     width: 40px;
 }
 
+.log-in{
+    text-align: center;
+}
 
 
 .score-entry{

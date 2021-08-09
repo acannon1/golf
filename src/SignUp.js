@@ -1,37 +1,18 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import golfDbApi from './GolfDbApi.js';
 import './Golf.css';
 
-const SignUp = ({db=null, user={}}) => {
-  const [tournaments, setTournaments] = useState([]);
-
-  const ref = db.collection("Tournaments").where("status", "==", "Sign Up");
-
-  const getTournaments = () => {
-    ref.onSnapshot((querySnapshot) => {
-        const items = [];
-        querySnapshot.docs.map((doc) => {
-            items.push(doc.data())
-        });
-        setTournaments(items);
-    }, (error) => {
-        console.log(error)
-    })
-}
+const SignUp = ({db=null, user={}, futureTournaments=null}) => {
   
   const handleSignUp=(date, name)=>{
     golfDbApi.signUp(db, date, name)
   }
-
-  useEffect(() => {
-    getTournaments();
-  }, [])
   
   return (
     <div className="container-home">
         <h3> Sign Up</h3>
         <div>Next event: </div>
-        {tournaments.map((tournament) => {
+        {futureTournaments.map((tournament) => {
           return(
             <div>
               <div>{tournament.date} @ {tournament.course}</div>

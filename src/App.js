@@ -23,6 +23,8 @@ function App() {
   const [initializing, setInitializing] = useState(true);
   const [golfers, setGolfers] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [futureTournaments, setFutureTournaments] = useState([]);
+  const [allTournaments, setAllTournaments] = useState([]);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(userInfo => {
@@ -36,6 +38,10 @@ function App() {
           .then((data) => setGolfers(data));
         golfDbApi.getCourses(firestore)
           .then((data) => setCourses(data));
+        golfDbApi.getFutureTournaments(firestore)
+          .then((data) => setFutureTournaments(data));
+        golfDbApi.getTournaments(firestore)
+          .then((data) => setAllTournaments(data));
       } else {
         setUser(null);
       }
@@ -63,11 +69,11 @@ function App() {
       console.log(error.message);
     }
   }
-
+console.log(user)
   return (
     <Router>
       <div className="app-container">
-          <Header/>
+          <Header user={user} user2={user2} signOut={signOut}/>
           {user === null ?
             <div className="log-in">
               <div> Welcome to the STGA. Please log in. </div>
@@ -76,11 +82,11 @@ function App() {
             </div>
             :             
             <div>
-              <button onClick={signOut}>Sign Out</button>
+              {/* <button onClick={signOut}>Sign Out</button>
               {(Object.keys(user2).length === 0 && user2.constructor === Object) ?
                 null :
                 user2.name.split(' ').slice(0, 1).join(' ')
-              }
+              } */}
             </div>
           }
           {user !== null ?
@@ -90,7 +96,7 @@ function App() {
                     <Switch>
                       {/* <Route path="/score-card"> <ScoreCard db={firestore} players={golfers}/> </Route> */}
                       <Route path="/players"> <PlayerPage players={golfers}/> </Route>
-                      <Route path="/tournaments"> <Tournaments db={firestore}/> </Route>
+                      <Route path="/tournaments"> <Tournaments tournaments={allTournaments}/> </Route>
                       <Route path="/score-card"> <ScoreCard db={firestore}/> </Route>
                       <Route path="/leaderboard"> <Leaderboard db={firestore}/> </Route>
                       {/* <Route path="/play"> <Results db={firestore}/> </Route> */}
@@ -98,7 +104,7 @@ function App() {
                       <Route path="/create-golfer"> <CreateGolfer db={firestore}/> </Route>
                       <Route path="/create-tournament"> <CreateTournament db={firestore} courses={courses}/> </Route>
                       <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
-                      <Route path="/sign-up"> <SignUp db={firestore} user={user2}/> </Route>
+                      <Route path="/sign-up"> <SignUp db={firestore} user={user2} futureTournaments={futureTournaments}/> </Route>
                       <Route path="/"> <Home db={firestore}/> </Route>
                       {/* <Route component={} /> */}
                     </Switch>

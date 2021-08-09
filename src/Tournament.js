@@ -42,27 +42,3 @@ const Tournament = ({tournament}) => {
 }
 
 export default Tournament;
-
-
-// {
-//     tournament.status === "Done" ? 
-//         <Link 
-//             to={{
-//                 pathname: path,
-//                 state: {
-//                     date: tournament.date,
-//                     course: tournament.course,
-//                 },
-//             }}
-//         >
-//             {title} 
-//         </Link>
-//          : 
-//         <Link 
-//             to={{
-//                 pathname: "/sign-up",
-//             }}
-//         >
-//             Sign Up 
-//         </Link>
-// }
