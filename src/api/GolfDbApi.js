@@ -116,12 +116,14 @@ const golfDbApi = {
     },
 
     async signUp(db, date, name) {
+        
         const snapshot = await db.collection('Tournaments')
             .where("status", "==", "Sign Up")
             .get();
 
         //Map thru each document
         snapshot.docs.map((doc) => {
+            console.log(doc.data())
             // let scoreCard = new Array(19).fill(0)
             let scoreCard = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
             //Find document match to date
@@ -131,6 +133,32 @@ const golfDbApi = {
                     .update({
                         signUpList: firebase.firestore.FieldValue.arrayUnion( name ),
                         [name]: scoreCard
+                    })
+                    .then(() => {
+                        console.log("done")
+                    })
+                    .catch((error) => {
+                        console.error("Error writing document: ", error);
+                    });
+            }
+        });
+    },
+
+    async withDraw(db, date, name) {
+        
+        const snapshot = await db.collection('Tournaments')
+            .where("status", "==", "Sign Up")
+            .get();
+
+        //Map thru each document
+        snapshot.docs.map((doc) => {
+            //Find document match to date
+            if(doc.data().date === date) {
+                //Update sign-up list
+                db.collection('Tournaments').doc(doc.id)
+                    .update({
+                        signUpList: firebase.firestore.FieldValue.arrayRemove(name),
+                        [name]: firebase.firestore.FieldValue.delete()
                     })
                     .then(() => {
                         console.log("done")

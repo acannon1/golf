@@ -7,111 +7,105 @@ import SignUp from './SignUp.js';
 import PlayerPage from './PlayerPage.js';
 import Tournaments from './Tournaments.js';
 import Header from './Header.js';
-// import Play from './Play.js';
 import CreateCourse from './CreateCourse.js';
 import CreateGolfer from './CreateGolfer.js';
 import CreateTournament from './CreateTournament.js';
 import Leaderboard from './Leaderboard.js';
+import RegisterUser from './RegisterUser.js';
 import {auth, firestore} from './Authorize/Support.js';
-import firebase from 'firebase/app';
-import golfDbApi from './GolfDbApi.js';
+import golfDbApi from './api/GolfDbApi.js';
 import './App.css';
 
 function App() {
-  const [user, setUser] = useState(() => auth.currentUser);
+  const [loginStatus, setLoginStatus] = useState(false)
+  const [userEmail, setUserEmail] = useState(null)  
   const [user2, setUser2] = useState({});
-  const [initializing, setInitializing] = useState(true);
   const [golfers, setGolfers] = useState([]);
   const [courses, setCourses] = useState([]);
   const [futureTournaments, setFutureTournaments] = useState([]);
   const [allTournaments, setAllTournaments] = useState([]);
-
+  const [admin, setAdmin] = useState(false)
+ 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(userInfo => {
-      if (userInfo) {
-        setUser(userInfo);
-        if(userInfo !== null) {
-          golfDbApi.getGolferInfo(firestore, userInfo.email)
-            .then((data) => setUser2(data));
-        }
-        golfDbApi.getGolfers(firestore)
-          .then((data) => setGolfers(data));
-        golfDbApi.getCourses(firestore)
-          .then((data) => setCourses(data));
-        golfDbApi.getFutureTournaments(firestore)
-          .then((data) => setFutureTournaments(data));
-        golfDbApi.getTournaments(firestore)
-          .then((data) => setAllTournaments(data));
-      } else {
-        setUser(null);
-      }
-      if(initializing) {
-        setInitializing(false)
-      }
-    })
-    return unsubscribe;
-  }, [golfDbApi.getGolfers, golfDbApi.getCourses]);
-
-  const signIn = async () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    try {
-      await auth.signInWithPopup(provider);
-    } catch(error) {
-      console.log(error)
+    if(loginStatus) {
+      console.log("loginStatus = true")
+      golfDbApi.getCourses(firestore)
+        .then((data) => setCourses(data));
+      golfDbApi.getTournaments(firestore)
+        .then((data) => setAllTournaments(data));
+      golfDbApi.getGolfers(firestore)
+        .then((data) => setGolfers(data));
+      golfDbApi.getFutureTournaments(firestore)
+        .then((data) => setFutureTournaments(data));
+    } else {
+      console.log("loginStatus = false")
     }
+  }, [])
+
+  const successfullLogin = (val1, val2) => {
+    setLoginStatus(val1);
+    setUserEmail(val2);
+    golfDbApi.getGolferInfo(firestore, val2)
+      .then((data) => {
+        setUser2(data)
+        setAdmin(data.admin)
+      })
+    golfDbApi.getCourses(firestore)
+      .then((data) => setCourses(data));
+    golfDbApi.getTournaments(firestore)
+      .then((data) => setAllTournaments(data));
+    golfDbApi.getGolfers(firestore)
+      .then((data) => setGolfers(data));
+    golfDbApi.getFutureTournaments(firestore)
+      .then((data) => setFutureTournaments(data));
   }
 
   const signOut = async () => {
-    console.log("signOut")
     try {
       await auth.signOut();
+      setUserEmail(null)
+      setLoginStatus(false)
     } catch(error) {
       console.log(error.message);
     }
   }
-console.log(user)
+
   return (
     <Router>
       <div className="app-container">
-          <Header user={user} user2={user2} signOut={signOut}/>
-          {user === null ?
+          <Header
+            userEmail={userEmail}
+            signOut={signOut}
+            auth={auth}
+          />
+          {loginStatus === false ?
             <div className="log-in">
-              <div> Welcome to the STGA. Please log in. </div>
-              <button onClick={signIn}>Log In</button>
-              <button onClick={signIn}>Create Account</button>
+              <RegisterUser
+                auth={auth}
+                db={firestore}
+                successfullLogin={successfullLogin}
+                setAdmin={setAdmin}
+              />
             </div>
             :             
             <div>
-              {/* <button onClick={signOut}>Sign Out</button>
-              {(Object.keys(user2).length === 0 && user2.constructor === Object) ?
-                null :
-                user2.name.split(' ').slice(0, 1).join(' ')
-              } */}
+              <SideBar isAdmin={admin}/>
+              <div className="temp">
+                <Switch>
+                  <Route path="/players"> <PlayerPage players={golfers}/> </Route>
+                  <Route path="/tournaments"> <Tournaments tournaments={allTournaments}/> </Route>
+                  <Route path="/score-card"> <ScoreCard db={firestore}/> </Route>
+                  <Route path="/leaderboard"> <Leaderboard db={firestore}/> </Route>
+                  {/* <Route path="/play"> <Results db={firestore}/> </Route> */}
+                  <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
+                  <Route path="/create-golfer"> <CreateGolfer db={firestore}/> </Route>
+                  <Route path="/create-tournament"> <CreateTournament db={firestore} courses={courses}/> </Route>
+                  <Route path="/sign-up"> <SignUp db={firestore} user={user2} futureTournaments={futureTournaments}/> </Route>
+                  <Route path="/"> <Home db={firestore}/> </Route>
+                  {/* <Route component={} /> */}
+                </Switch>
+              </div>
             </div>
-          }
-          {user !== null ?
-            <div>
-              <SideBar/>
-                <div className="temp">
-                    <Switch>
-                      {/* <Route path="/score-card"> <ScoreCard db={firestore} players={golfers}/> </Route> */}
-                      <Route path="/players"> <PlayerPage players={golfers}/> </Route>
-                      <Route path="/tournaments"> <Tournaments tournaments={allTournaments}/> </Route>
-                      <Route path="/score-card"> <ScoreCard db={firestore}/> </Route>
-                      <Route path="/leaderboard"> <Leaderboard db={firestore}/> </Route>
-                      {/* <Route path="/play"> <Results db={firestore}/> </Route> */}
-                      <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
-                      <Route path="/create-golfer"> <CreateGolfer db={firestore}/> </Route>
-                      <Route path="/create-tournament"> <CreateTournament db={firestore} courses={courses}/> </Route>
-                      <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
-                      <Route path="/sign-up"> <SignUp db={firestore} user={user2} futureTournaments={futureTournaments}/> </Route>
-                      <Route path="/"> <Home db={firestore}/> </Route>
-                      {/* <Route component={} /> */}
-                    </Switch>
-                </div>
-            </div>
-            :
-            <div></div>
           }
         </div>
     </Router>

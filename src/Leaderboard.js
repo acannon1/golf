@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import golfDbApi from './GolfDbApi.js';
+import golfDbApi from './api/GolfDbApi.js';
 import './Leaderboard.css';
 
 const Results = ({db=null}) => {

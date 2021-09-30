@@ -95,6 +95,13 @@
   /* width: 200px; */
 }
 
+.side-nav ul div{
+    padding:0;
+    list-style-image: none;
+    list-style: none;
+    display: inline-flex;
+}
+
 /* table{
    border-collapse: collapse;
    margin: 25px 25px;
@@ -354,7 +361,10 @@ table tr:nth-child(even){
 }
 
 .log-in{
+    height: 600px;
     text-align: center;
+    background-image: url("./images/Free-golf-backgrounds-photos-pics.jpg");
+    /* background-size: 800px 800px; */
 }
 
 
@@ -449,4 +459,12 @@ table tr:nth-child(even){
 
 .below-par{
     color: red;
+}
+
+.userEmail {
+    font-size: 14px;
+}
+
+.signupList {
+    list-style-type: none;
 }

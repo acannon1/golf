@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import golfDbApi from './GolfDbApi.js';
+import golfDbApi from './api/GolfDbApi.js';
 
 const CreateCourse = ({db=null}) => {
     const [name, setName] = useState('');

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import SelectFoursome from './SelectFoursome.js';
 import IndivScoreCard from './IndivScoreCard.js';
 import ParHeader from './ParHeader';
-import golfDbApi from './GolfDbApi.js';
+import golfDbApi from './api/GolfDbApi.js';
 import './Golf.css';
 
 const ScoreCard = ({db=null}) => {
@@ -32,8 +32,10 @@ const ScoreCard = ({db=null}) => {
   }
 
   useEffect(() => {
+    console.log('scorecard')
     golfDbApi.getCurrentTournament(db)
       .then((data) => setTournament(data));
+      console.log('get pool')
     getPlayerPool();
   }, [])
 
@@ -46,7 +48,8 @@ const ScoreCard = ({db=null}) => {
   return (
     <div id="play" className="container-home">
         <div className="tournament-data"> {tournament.date} </div>
-        <div className="tournament-data"> {tournament.course} </div>
+        <div className="tournament-data"> {tournament.course} </div>        
+        {!startRound ? null : <div> Round in Progress </div>}
         {!startRound ?
           <SelectFoursome/>
         :

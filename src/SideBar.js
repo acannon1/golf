@@ -1,8 +1,11 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { Link } from "react-router-dom";
 import './Golf.css';
 
-const SideBar = () => {
+const SideBar = ({isAdmin}) => {
+    // const isAdmin = useSelector((state) => state.isAdmin);
+    // const [isAdmin, setIsAdmin] = useState(true);
+
     return(        
         <div className="side-nav">
             <ul className="nav-links">
@@ -27,18 +30,20 @@ const SideBar = () => {
                 <li>
                     <Link to="/leaderboard">Leaderboard</Link>
                 </li>
-                <li>
-                    {/* <Link to="/score-card">Score Card</Link> */}
-                </li>
-                <li>
-                    <Link to="/create-course">Create Course</Link>
-                </li>
-                <li>
-                    <Link to="/create-golfer">Create Golfer</Link>
-                </li>
-                <li>
-                    <Link to="/create-tournament">Create Tournament</Link>
-                </li>
+                {isAdmin ? 
+                    <div>
+                        <li>
+                            <Link to="/create-course">Create Course</Link>
+                        </li>
+                        <li>
+                            <Link to="/create-golfer">Create Golfer</Link>
+                        </li>
+                        <li>
+                            <Link to="/create-tournament">Create Tournament</Link>
+                        </li>
+                    </div>
+                    : null
+                }
                 <li>
                     {/* <Link to="/handicap">Handicaps</Link> */}
                 </li>

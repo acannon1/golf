@@ -6,7 +6,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import moment from 'moment' // 292.3K (gzipped: 71.6K)
-import golfDbApi from './GolfDbApi.js';
+import golfDbApi from './api/GolfDbApi.js';
 
 const CreateTournament = ({db=null, courses=[]}) => {
     const [course, setCourse] = useState('');
