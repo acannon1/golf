@@ -2,6 +2,27 @@ import firebase from 'firebase/app';
 // import Moment from 'react-moment';
 
 const golfDbApi = {
+    async saveGrouping(db, date, grouping) {
+        const query = await db.collection('Tournaments')
+            .where('date', '==', date).get();
+
+        if (!query.empty) {
+            const snapshot = query.docs[0];
+            db.collection("Tournaments").doc(snapshot.id)
+                .update({
+                    foursomes: firebase.firestore.FieldValue.arrayUnion( grouping )
+                })
+                .then(() =>
+                    console.log("done")
+                )
+                .catch((error) => {
+                    console.error("Error writing document: ", error);
+                })
+        } else {
+            console.log("document not found")
+        }
+    },
+
     async saveScoreRealTime(db, date, player, scoreCard) {
         const query = await db.collection('Tournaments')
             .where('date', '==', date).get();
@@ -225,7 +246,8 @@ const golfDbApi = {
         let tournament = {};
         const snapshot = await db.collection('Tournaments').get();
         snapshot.docs.map((doc) => {
-            if(doc.data().status === "In Progress") {
+            if((doc.data().status === "In Progress") ||
+               (doc.data().status === "Ready to Start")) {
                 tournament = doc.data();
                 
             }

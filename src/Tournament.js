@@ -11,6 +11,9 @@ const Tournament = ({tournament}) => {
         if(tournament.status === "Sign Up") {
             setPath("/sign-up");
             setTitle("Sign Up");
+        } else if(tournament.status === "Ready to Start") {
+            setPath("/results");
+            setTitle("Ready to Start");
         } else if(tournament.status === "In Progress") {
             setPath("/results");
             setTitle("In Progress");

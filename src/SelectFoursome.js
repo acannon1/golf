@@ -1,32 +1,42 @@
-import React from 'react';
-import { useDispatch, useSelector } from "react-redux";
+import React, {useEffect, useState} from 'react';
+import golfDbApi from './api/GolfDbApi.js';
 import './Golf.css';
 
-const SelectFoursome = () => {
+const SelectFoursome = ({db, handleStartRound}) => {
 
-    const pool = useSelector((state) => state.pool);
-    const selected = useSelector((state) => state.selected);
-    const foursome = useSelector((state) => state.foursome);
-    const dispatch = useDispatch();
+    const [selected, setSelected] = useState([]);
+    const [pool, setPool] = useState([]);
 
-    const selectPlayer = (index) => {
-        dispatch({type: 'SELECT_PLAYER', payload: index});
+    useEffect(() => {
+        golfDbApi.getCurrentTournament(db)
+          .then((data) => {
+            setPool(data.signUpList)
+          });
+    }, [])
+
+    const selectPlayer = (player) => {
+        let tempArray = [...selected];
+        tempArray.push(player)
+        setSelected(tempArray)
+        
+        let tempPool = [...pool];    
+        tempPool = tempPool.filter(e => e !== player);
+        setPool(tempPool)
     }
 
-    const deSelectPlayer = (index) => {
-        dispatch({type: 'DESELECT_PLAYER', payload: index});
+    const deSelectPlayer = (player) => {
+        let tempSelected = [...selected];
+        tempSelected = tempSelected.filter(e => e !== player);
+        setSelected(tempSelected)
+        
+        let tempPool = [...pool];    
+        tempPool.push(player)
+        setPool(tempPool)
     }
 
     const handleStart = () => {
-      if(selected.length > 1) {
-        let data = {
-            player: (Object.keys(foursome)[0]), 
-            startRound: true
-        }
-        dispatch({
-          type: 'START_ROUND',
-          payload: data
-        });
+      if(selected.length > 0) {
+        handleStartRound(selected)
       }
     }
 
@@ -39,7 +49,7 @@ const SelectFoursome = () => {
                     {
                         pool.map((player, idx) => {
                             return(
-                                <div key={idx} className="names" onClick={() => selectPlayer(idx)}>
+                                <div key={idx} className="names" onClick={() => selectPlayer(player)}>
                                     {player}
                                 </div>
                             )
@@ -51,7 +61,7 @@ const SelectFoursome = () => {
                     {
                         selected.map((player, idx) => {
                             return(
-                                <div key={idx} className="names" onClick={() => deSelectPlayer(idx)}>
+                                <div key={idx} className="names" onClick={() => deSelectPlayer(player)}>
                                     {player}
                                 </div>
                             )
