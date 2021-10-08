@@ -51,3 +51,19 @@
     color: #ff0000;
     font-weight: bold;
 }
+
+#leader-board .skin {
+    /* display: block; */
+    /* height: 60px; */
+    /* width: 60px; */
+    /* line-height: 60px; */
+
+    border: 1px solid #333;
+    -moz-border-radius: 20px; /* or 50% */
+    border-radius: 20px;
+
+    /* background-color: black; */
+    /* color: white; */
+    text-align: center;
+    /* font-size: 2em; */
+}

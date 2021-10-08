@@ -1,8 +1,17 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Tournament from './Tournament.js';
+import golfDbApi from './api/GolfDbApi.js';
 import './Golf.css';
 
-const Tournaments = ({tournaments=[]}) => {
+const Tournaments = ({db, isAdmin=false}) => {
+
+    const [tournaments, setTournaments] = useState([])
+    
+    useEffect(() => {
+      golfDbApi.getTournaments(db)
+        .then((data) => setTournaments(data));
+    }, [])
+
      return (
         <div className="tournaments-page">
         <h3> Tournaments </h3>
@@ -11,7 +20,12 @@ const Tournaments = ({tournaments=[]}) => {
             {
                 tournaments.map((tournament, idx) => {
                     return (
-                        <Tournament key={idx} tournament={tournament}/>
+                        <Tournament
+                            key={idx}
+                            tournament={tournament}
+                            isAdmin={isAdmin}
+                            db={db}
+                        />
                     )
                 })
             }

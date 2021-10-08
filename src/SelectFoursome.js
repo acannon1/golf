@@ -8,9 +8,24 @@ const SelectFoursome = ({db, handleStartRound}) => {
     const [pool, setPool] = useState([]);
 
     useEffect(() => {
+        let temp = []
+        let usednames = []
+        let newSignUpList = [];
         golfDbApi.getCurrentTournament(db)
           .then((data) => {
-            setPool(data.signUpList)
+                if(Object.keys(data).length !== 0) {
+                    newSignUpList = [... data.signUpList]
+                    data.foursomes.map((foursome) => {
+                        temp = foursome.split(",")
+                        temp.map((name) => {
+                            usednames.push(name)
+                        })
+                    })
+                    usednames.map((name) => {
+                        newSignUpList = newSignUpList.filter(item => item !== name)
+                    })
+                    setPool(newSignUpList)
+                }
           });
     }, [])
 

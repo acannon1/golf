@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import { Link } from "react-router-dom";
+import golfDbApi from './api/GolfDbApi.js';
 import './Golf.css';
 
-const Tournament = ({tournament}) => {
+const Tournament = ({db=null, tournament, isAdmin=false}) => {
 
     const [path, setPath] = useState("");
     const [title, setTitle] = useState("");
@@ -23,6 +24,11 @@ const Tournament = ({tournament}) => {
         }
     }, [])
 
+    const handleStart = () => {
+        console.log("start")
+        golfDbApi.startTournament(db, tournament)
+    }
+
     return (
         <tr>
             <td className="tournament-data"> {tournament.date} </td>
@@ -40,6 +46,16 @@ const Tournament = ({tournament}) => {
                     {title} 
                 </Link>
             </td>
+            {isAdmin ?
+                tournament.status === 'Sign Up' ?
+                    <td className="tournament-data"> 
+                        <button onClick={handleStart}> Start </button>
+                    </td>
+                    :
+                    <td className="tournament-data"/>
+                :
+                null
+            }
         </tr>
     );
 }

@@ -5,7 +5,6 @@ const golfDbApi = {
     async saveGrouping(db, date, grouping) {
         const query = await db.collection('Tournaments')
             .where('date', '==', date).get();
-
         if (!query.empty) {
             const snapshot = query.docs[0];
             db.collection("Tournaments").doc(snapshot.id)
@@ -44,7 +43,6 @@ const golfDbApi = {
     },
 
     async saveRound(db, player, score, date) {
-        console.log(score)
         // Make the initial query
         const query = await db.collection('Tournaments')
             .where('date', '==', date).get();
@@ -126,7 +124,8 @@ const golfDbApi = {
             date: date,
             course: course,
             status: "Sign Up",
-            signUpList: []
+            signUpList: [],
+            foursomes: []
         })
         .then(() => {
             console.log("done")
@@ -189,6 +188,27 @@ const golfDbApi = {
                     });
             }
         });
+    },
+
+    async startTournament(db, tournament) {               
+        const query = await db.collection('Tournaments')
+            .where("date", "==", tournament.date)
+            .get();
+
+        if (!query.empty) {
+            const snapshot = query.docs[0];
+            db.collection("Tournaments").doc(snapshot.id)
+                .update({status: "In Progress"})
+                .then(() =>
+                    console.log("done")
+                )
+                .catch((error) => {
+                    console.error("Error writing document: ", error);
+                })
+
+        } else {
+            console.log("document not found")
+        }
     },
 
     async getGolferInfo(db, user){
@@ -343,29 +363,58 @@ const golfDbApi = {
             "Course": '',
             "Date": '',
             "Results":{},
-            "Par":{}
+            "Par":[]
         };
 
-        const ref = db.collection("Tournaments").where("status", "==", "In Progress");
+        const query = await db.collection("Tournaments")
+            .where("status", "==", "In Progress")
+            .get()
+
+        if(!query.empty) {
+            const snapshot = query.docs[0];
+            console.log(snapshot.data())
+            data.Course = snapshot.data().course;
+            data.Date = snapshot.data().date;
+            Object.keys(snapshot.data()).forEach(key => {
+                if((key !== 'course') && (key !== 'date') && (key !== 'status') &&
+                  (key !== 'signUpList') && (key !== 'foursomes') && (key !== 'scores')) {
+                    //   console.log(snapshot.data()[key])
+                    data.Results[key] = snapshot.data()[key];
+                    // snapshot.data()[key].map((score) => {                      
+                    //   console.log(score)
+                    // })
+                }
+            });
+          
+            db.collection("Courses").where("name", "==", snapshot.data().course).get()
+            .then(value => {
+                data['Par']=value.docs[0].data()['par']
+            })
+        } else {
+            console.log("empty")
+        }
     
-        ref.onSnapshot((querySnapshot) => {
-          let ref = querySnapshot.docs[0].data();
-          data.Course = ref.course;
-          data.Date = ref.date;
-          Object.keys(ref).forEach(key => {
-              if((key !== 'course') && (key !== 'date') &&(key !== 'status') && (key !== 'signUpList')) {
-                  data.Results[key] = ref[key];
-              }
-          });
+        // query.onSnapshot((querySnapshot) => {
+        //   let ref = querySnapshot.docs[0].data();
+        //   data.Course = ref.course;
+        //   data.Date = ref.date;
+        //   Object.keys(ref).forEach(key => {
+        //       if((key !== 'course') && (key !== 'date') && (key !== 'status') &&
+        //         (key !== 'signUpList') && (key !== 'foursomes')) {
+        //           data.Results[key] = ref[key];
+        //       }
+        //   });
           
         //   db.collection("Courses").where("name", "==", ref.course).get()
-        //     .then(value => setPar(value.docs[0].data()['par']))
-    console.log(data)
-          return(data);
-        }, (error) => {
-            console.log(error)
-        })
-        // console.log(data)
+        //     .then(value => {
+        //         data['Par']=value.docs[0].data()['par']
+        //     })
+
+        //   return(data);
+        // }, (error) => {
+        //     console.log(error)
+        // })
+        console.log(data)
         return(data);
     }
 }

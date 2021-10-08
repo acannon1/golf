@@ -20,10 +20,11 @@ function App() {
   const [loginStatus, setLoginStatus] = useState(false)
   const [userEmail, setUserEmail] = useState(null)  
   const [user2, setUser2] = useState({});
+  const [skins, setSkins] = useState({});
   const [golfers, setGolfers] = useState([]);
   const [courses, setCourses] = useState([]);
-  const [futureTournaments, setFutureTournaments] = useState([]);
-  const [allTournaments, setAllTournaments] = useState([]);
+  // const [futureTournaments, setFutureTournaments] = useState([]);
+  // const [allTournaments, setAllTournaments] = useState([]);
   const [admin, setAdmin] = useState(false)
  
   useEffect(() => {
@@ -31,12 +32,12 @@ function App() {
       console.log("loginStatus = true")
       golfDbApi.getCourses(firestore)
         .then((data) => setCourses(data));
-      golfDbApi.getTournaments(firestore)
-        .then((data) => setAllTournaments(data));
+      // golfDbApi.getTournaments(firestore)
+      //   .then((data) => setAllTournaments(data));
       golfDbApi.getGolfers(firestore)
         .then((data) => setGolfers(data));
-      golfDbApi.getFutureTournaments(firestore)
-        .then((data) => setFutureTournaments(data));
+      // golfDbApi.getFutureTournaments(firestore)
+      //   .then((data) => setFutureTournaments(data));
     } else {
       console.log("loginStatus = false")
     }
@@ -52,12 +53,12 @@ function App() {
       })
     golfDbApi.getCourses(firestore)
       .then((data) => setCourses(data));
-    golfDbApi.getTournaments(firestore)
-      .then((data) => setAllTournaments(data));
+    // golfDbApi.getTournaments(firestore)
+    //   .then((data) => setAllTournaments(data));
     golfDbApi.getGolfers(firestore)
       .then((data) => setGolfers(data));
-    golfDbApi.getFutureTournaments(firestore)
-      .then((data) => setFutureTournaments(data));
+    // golfDbApi.getFutureTournaments(firestore)
+    //   .then((data) => setFutureTournaments(data));
   }
 
   const signOut = async () => {
@@ -93,14 +94,16 @@ function App() {
               <div className="temp">
                 <Switch>
                   <Route path="/players"> <PlayerPage players={golfers}/> </Route>
-                  <Route path="/tournaments"> <Tournaments tournaments={allTournaments}/> </Route>
-                  <Route path="/score-card"> <ScoreCard db={firestore}/> </Route>
+                  {/* <Route path="/tournaments"> <Tournaments tournaments={allTournaments}/> </Route> */}
+                  <Route path="/tournaments"> <Tournaments db={firestore} isAdmin={admin}/> </Route>
+
+                  <Route path="/score-card"> <ScoreCard db={firestore} user={user2}/> </Route>
                   <Route path="/leaderboard"> <Leaderboard db={firestore}/> </Route>
-                  {/* <Route path="/play"> <Results db={firestore}/> </Route> */}
+                  {/* <Route path="/skins"> <Skins skins={skins}/> </Route> */}
                   <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
                   <Route path="/create-golfer"> <CreateGolfer db={firestore}/> </Route>
                   <Route path="/create-tournament"> <CreateTournament db={firestore} courses={courses}/> </Route>
-                  <Route path="/sign-up"> <SignUp db={firestore} user={user2} futureTournaments={futureTournaments}/> </Route>
+                  <Route path="/sign-up"> <SignUp db={firestore} user={user2}/> </Route>
                   <Route path="/"> <Home db={firestore}/> </Route>
                   {/* <Route component={} /> */}
                 </Switch>

@@ -2,12 +2,15 @@ import React, {useState, useEffect} from 'react';
 import golfDbApi from './api/GolfDbApi.js';
 import './Golf.css';
 
-const SignUp = ({db=null, user={}, futureTournaments=null}) => {
+const SignUp = ({db=null, user={}}) => {
 
   const [tournaments, setTournaments] = useState([])
   
   useEffect(() => {
-    setTournaments(futureTournaments)
+    golfDbApi.getFutureTournaments(db)
+      .then((data) => {
+        setTournaments(data)
+      });
   })
 
   const handleSignUp=(date, idx)=>{
