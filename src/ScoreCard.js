@@ -31,11 +31,11 @@ const ScoreCard = ({db=null, user=null}) => {
   }, [])
 
   const handleScore = (player, hole, score) => {
-    const tempScore = [...tournament[player]];
+    const tempScore = tournament['scores'][player].split(",").map(Number);
     tempScore[hole]=score;
-    tournament[player] = tempScore;
+    tournament['scores'][player] = tempScore.join(",");
     setTournament(tournament)    
-    golfDbApi.saveScoreRealTime(db,tournament.date,player,tournament[player])
+    golfDbApi.saveScoreRealTime(db,tournament.date,player,tournament['scores'][player])
   }
 
   const handleStartRound = (names) => {
@@ -48,7 +48,7 @@ const ScoreCard = ({db=null, user=null}) => {
     grouping = grouping.substring(0, grouping.length - 1);
     golfDbApi.saveGrouping(db, tournament.date, grouping)
   }
-
+  
   return (
     <div id="play" className="container-home">
         <div className="tournament-data"> {tournament.date} </div>
@@ -62,18 +62,22 @@ const ScoreCard = ({db=null, user=null}) => {
         <div className="score-card">
           <div> Round in Progress </div>
           <ParHeader par={par}/>
-          
-          {foursome.map((player, idx) => {
-            return(
-              <IndivScoreCard
-                key={idx}
-                player={player}
-                par={par}
-                scores={tournament[player]}
-                handleHoleScore={handleScore}
-              />
-            )
-          })}
+          {
+            tournament['scores'] !== undefined ?
+              foursome.map((player, idx) => {
+                return(
+                  <IndivScoreCard
+                    key={idx}
+                    player={player}
+                    par={par}
+                    scores={tournament['scores'][player].split(',').map(Number)}
+                    handleHoleScore={handleScore}
+                  />
+                )
+              })
+            :
+              null
+          }
         </div>
         }
     </div>

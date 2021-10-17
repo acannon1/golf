@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-// import golfDbApi from './api/GolfDbApi.js';
 import './Leaderboard.css';
 
 const Leaderboard = ({db=null}) => {
@@ -11,102 +10,49 @@ const Leaderboard = ({db=null}) => {
     const ref = db.collection("Tournaments").where("status", "==", "In Progress");
 
     const getResults = () => {
-        let data = {
-            "Course": '',
-            "Date": '',
-            "Results":{}
-        };
-
-        let lowestScore = [8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8];
-        let winner = ["", "", "", "", "", "", "", "", "","", "", "", "", "", "", "", "", ""];
 
         ref.onSnapshot((querySnapshot) => {
           if(querySnapshot.docs[0] !== undefined) {
             let ref = querySnapshot.docs[0].data();
-            data.Course = ref.course;
-            data.Date = ref.date;
-            Object.keys(ref).forEach(key => {
-                if((key !== 'course') && (key !== 'date') && (key !== 'status') &&
-                  (key !== 'signUpList') && (key !== 'foursomes') && (key !== 'scores')) {
-                    data.Results[key] = ref[key];
-                    let numberOfSkins = 1;
 
-                    //DETERMINE SKINS PAYOUTS
-                    ref[key].map((score, idx) => {
-                      if(score !== 0) {
-                        if( score < lowestScore[idx]) {
-                          lowestScore[idx] = score;
-                          for(let i=0; i<numberOfSkins; i++) {
-                            winner[idx-i] = key;
-                          }
-                          numberOfSkins = 1;
-                        } else if ((winner[idx] !== '') && (score == lowestScore[idx])){
-                          numberOfSkins++;
-                        } else if (numberOfSkins > 1) {
-                          for(let i=0; i<numberOfSkins; i++) {
-                            winner[idx-i] = winner[idx];
-                          }
-                          numberOfSkins=1
-                        }
-                      }
-                    })
 
-                    // console.log(winner)
-                }
+
+            Object.keys(ref.scores).map((key) => {
+              ref.scores[key] = ref.scores[key].split(",").map(Number);
             });
 
-            setWinners(winner)
-            const occurrences = winner.reduce((acc, curr) => {
+            db.collection("Courses").where("name", "==", ref.course).get()
+            .then(value => {
+              setPar(value.docs[0].data()['par']);
+            });
+
+            
+            const birdieTotals = ref.skins.reduce(function (acc, curr) {
+              return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+            }, {});                  
+
+            const skinTotals = ref.skins.reduce(function (acc, curr) {
               return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
             }, {});
-            setSkins(occurrences);
-            console.log(occurrences) // => {2: 5, 4: 1, 5: 3, 9: 1}
 
-            db.collection("Courses").where("name", "==", ref.course).get()
-              .then(value => setPar(value.docs[0].data()['par']))
-            setResults(data);
+            ref.skinTotals = skinTotals;
+            ref.birdieTotals = birdieTotals;
+                            
+            console.log(ref)
           }
         }, (error) => {
             console.log(error)
         })
-  }
+    }
 
     useEffect(() => {
-        //  golfDbApi.getRealTimeScores(db)
-        //    .then((data) => {
-        //     //  console.log(data);
-
-        //     setResults(data)
-        //     // setPar(data.Par)
-        //  });
         getResults();
     }, {})
 
-    // const getData = () => {
-    //   console.log("getData")
-    //   const ref = db.collection("Tournaments").where("status", "==", "In Progress");
-
-    //   ref.onSnapshot((querySnapshot) => {
-    //     if(querySnapshot.docs[0] !== undefined) {
-    //       let ref = querySnapshot.docs[0].data();
-    //       console.log(ref.scores)
-    //       ref.scores.map((score, idx) => {
-    //         console.log(score)
-    //         console.log(idx)
-    //         console.log(score['Alan'])
-    //         console.log(ref.scores[idx])
-    //         console.log(Object.keys(ref.scores[idx]))
-    //       })
-    //     }
-    //   }, (error) => {
-    //       console.log(error)
-    //   })
-    // }
 
   var total = 0;
   return (
     <div id="leader-board">
-      {/* <button onClick={getData}> Click </button> */}
       {Object.keys(results).length===0 ? 
         null
       :
@@ -124,6 +70,7 @@ const Leaderboard = ({db=null}) => {
                 }
                 <th>Tot</th>
                 <th>Skins</th>
+                <th>Birdies</th>
               </tr>
             </thead>
             <tbody>
@@ -137,34 +84,36 @@ const Leaderboard = ({db=null}) => {
                 }
                 <td>{total}</td>
                 <td></td>
+                <td></td>
               </tr>
             {
-              Object.keys(results.Results).map((player, index) => {
-                return(
-                    <tr  key={index}>
-                        <td> {player} </td>
-                        {
-                            results.Results[player].map((score, idx) => {
-                                return(
-                                  <td key={idx}>
-                                    <div 
-                                      className=
-                                        {score < par[index] ?
-                                          score !== 0 ? 
-                                            (winners[idx] === player ? "leader-board red skin" : "leader-board red") : 
-                                            null
-                                        :
-                                          winners[idx] === player ? "leader-board skin" : null
-                                        }
-                                      >
-                                      {score !== 0 ? score : null}
-                                    </div>
-                                  </td>)
-                            })
-                        }
-                        <td> {skins[player]} </td>
-                    </tr>
-                )})
+                Object.keys(results.scores).map((player, index) => {
+                  return(
+                      <tr  key={index}>
+                          <td> {player} </td>
+                          {
+                              results.scores[player].map((score, idx) => {
+                                  return(
+                                    <td key={idx}>
+                                      <div 
+                                        className=
+                                          {score < par[index] ?
+                                            score !== 0 ? 
+                                              (results.skins[idx] === player ? "leader-board red skin" : "leader-board red") : 
+                                              null
+                                          :
+                                            results.skins[idx] === player ? "leader-board skin" : null
+                                          }
+                                        >
+                                        {score !== 0 ? score : null}
+                                      </div>
+                                    </td>)
+                              })
+                          }
+                          <td> {results.skinTotals[player]} </td>
+                          <td> {results.birdieTotals[player]} </td>
+                      </tr>
+                  )})
             }
             </tbody>
           </table>

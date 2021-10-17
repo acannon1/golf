@@ -1,5 +1,7 @@
 import firebase from 'firebase/app';
-// import Moment from 'react-moment';
+import axios from 'axios';
+
+const baseUrl = 'https://firestore.googleapis.com/v1/projects/golf-40e5a/databases/(default)';
 
 const golfDbApi = {
     async saveGrouping(db, date, grouping) {
@@ -28,8 +30,10 @@ const golfDbApi = {
 
         if (!query.empty) {
             const snapshot = query.docs[0];
+            let updateScores = snapshot.data().scores;
+            updateScores[player] = scoreCard;
             db.collection("Tournaments").doc(snapshot.id)
-                .update({[player]: scoreCard})
+                .update({scores: updateScores})
                 .then(() =>
                     console.log("done")
                 )
@@ -40,6 +44,19 @@ const golfDbApi = {
         } else {
             console.log("document not found")
         }
+    },
+
+    testAxios() {
+        console.log("inside textAxios");
+        axios.get('https://us-central1-golf-40e5a.cloudfunctions.net/helloCors')
+        // axios.get(baseUrl + `/documents/Golfers`)
+          .then(response => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+         
     },
 
     async saveRound(db, player, score, date) {
@@ -120,12 +137,19 @@ const golfDbApi = {
     },
 
     createTournament(db, date, course) {
-        db.collection('Tournaments').add({
+        let docID = date.replace(/[ ,.]/g, '') + course.replace(/[ ]/g, '').substring(0,5)
+
+        db.collection('Tournaments').doc(docID).set({
             date: date,
             course: course,
             status: "Sign Up",
             signUpList: [],
-            foursomes: []
+            foursomes: [],
+            scores: {},
+            skins: [],
+            birdies: [],
+            skinsCount: {},
+            birdiesCount: {}
         })
         .then(() => {
             console.log("done")
@@ -143,16 +167,16 @@ const golfDbApi = {
 
         //Map thru each document
         snapshot.docs.map((doc) => {
-            console.log(doc.data())
-            // let scoreCard = new Array(19).fill(0)
-            let scoreCard = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
             //Find document match to date
             if(doc.data().date === date) {
+                let updateScores = doc.data().scores;
+                updateScores[name] = "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";                
+
                 //Update sign-up list
                 db.collection('Tournaments').doc(doc.id)
                     .update({
                         signUpList: firebase.firestore.FieldValue.arrayUnion( name ),
-                        [name]: scoreCard
+                        scores: updateScores
                     })
                     .then(() => {
                         console.log("done")
@@ -174,11 +198,14 @@ const golfDbApi = {
         snapshot.docs.map((doc) => {
             //Find document match to date
             if(doc.data().date === date) {
+                let updateScores = doc.data().scores;
+                updateScores = updateScores.[name].delete;
+
                 //Update sign-up list
                 db.collection('Tournaments').doc(doc.id)
                     .update({
                         signUpList: firebase.firestore.FieldValue.arrayRemove(name),
-                        [name]: firebase.firestore.FieldValue.delete()
+                        scores: updateScores
                     })
                     .then(() => {
                         console.log("done")
@@ -212,29 +239,8 @@ const golfDbApi = {
     },
 
     async getGolferInfo(db, user){
-        let temp = {};
-        // db.collection('Golfers').doc(user)
-        //     .get()
-        //         .then((doc) => {
-        //             if (doc.exists) {
-        //                 temp = { ...doc.data()}
-        //             } else {
-        //                 console.log("No such document!");
-        //             }
-        //         }).catch((error) => {
-        //             console.log("Error getting document:", error);
-        //         });
-
-            const snapshot = await db.collection('Golfers').doc(user).get();
-            return(snapshot.data())
-        // const snapshot = await db.collection('Golfers')
-        //     .where("userInfo","==",user.uid)
-        //     .get();
-        //     console.log(doc.data())
-        // snapshot.docs.map((doc) => {
-        //     temp = [...doc.data().par];
-        // });
-        // return temp;
+        const snapshot = await db.collection('Golfers').doc(user).get();
+        return(snapshot.data())
     },
 
     async getGolfers (db) {
@@ -255,8 +261,6 @@ const golfDbApi = {
         let tournaments = [];
         const snapshot = await db.collection('Tournaments').get();
         snapshot.docs.map((doc) => {
-            // let temp = doc.data();
-            // temp["date"] = doc.id;
             tournaments.push(doc.data())
         });
         return tournaments;
@@ -269,7 +273,6 @@ const golfDbApi = {
             if((doc.data().status === "In Progress") ||
                (doc.data().status === "Ready to Start")) {
                 tournament = doc.data();
-                
             }
         });
         return tournament;
@@ -332,14 +335,6 @@ const golfDbApi = {
         }, (error) => {
             console.log(error)
         })
-        // = await db.collection('Tournaments')
-        //     .where("status", "==", "Sign Up")
-        //     .get();
-        // snapshot.docs.map((doc) => {
-        //     // let temp = doc.data();
-        //     // temp["date"] = doc.id;
-        //     tournaments.push(doc.data())
-        // });
         return tournaments;
     },
 
@@ -378,11 +373,7 @@ const golfDbApi = {
             Object.keys(snapshot.data()).forEach(key => {
                 if((key !== 'course') && (key !== 'date') && (key !== 'status') &&
                   (key !== 'signUpList') && (key !== 'foursomes') && (key !== 'scores')) {
-                    //   console.log(snapshot.data()[key])
                     data.Results[key] = snapshot.data()[key];
-                    // snapshot.data()[key].map((score) => {                      
-                    //   console.log(score)
-                    // })
                 }
             });
           
@@ -393,28 +384,6 @@ const golfDbApi = {
         } else {
             console.log("empty")
         }
-    
-        // query.onSnapshot((querySnapshot) => {
-        //   let ref = querySnapshot.docs[0].data();
-        //   data.Course = ref.course;
-        //   data.Date = ref.date;
-        //   Object.keys(ref).forEach(key => {
-        //       if((key !== 'course') && (key !== 'date') && (key !== 'status') &&
-        //         (key !== 'signUpList') && (key !== 'foursomes')) {
-        //           data.Results[key] = ref[key];
-        //       }
-        //   });
-          
-        //   db.collection("Courses").where("name", "==", ref.course).get()
-        //     .then(value => {
-        //         data['Par']=value.docs[0].data()['par']
-        //     })
-
-        //   return(data);
-        // }, (error) => {
-        //     console.log(error)
-        // })
-        console.log(data)
         return(data);
     }
 }
