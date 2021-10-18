@@ -1,14 +1,16 @@
 import React, {useState, useEffect} from 'react';
+import { useLocation } from "react-router-dom";
 import golfDbApi from './api/GolfDbApi.js';
 import './Leaderboard.css';
 
-const Leaderboard = ({db=null}) => {
+const PastResults = ({db=null}) => {
     const [results, setResults] = useState({});
+    const location = useLocation();
 
     useEffect(() => {
-      golfDbApi.getLeaderBoard(db)
+      golfDbApi.getPastResults(db, location.state.date, location.state.course)
         .then((data) => {
-          setResults(data);
+          setResults(data)
         })
     }, {})
 
@@ -50,6 +52,7 @@ const Leaderboard = ({db=null}) => {
                 <td></td>
               </tr>
             {
+              results.scores !== undefined ?
                 Object.keys(results.scores).map((player, index) => {
                   return(
                       <tr  key={index}>
@@ -73,10 +76,22 @@ const Leaderboard = ({db=null}) => {
                                     </td>)
                               })
                           }
-                          <td> {results.skinTotals[player]} </td>
-                          <td> {results.birdieTotals[player]} </td>
+                          <td>
+                            {
+                              results.skinTotals[player] !== undefined ? 
+                                results.skinTotals[player] : null
+                            }
+                          </td>
+                          <td>
+                            {
+                              results.birdieTotals[player] !== undefined ? 
+                                results.birdieTotals[player] : null
+                            }
+                          </td>
                       </tr>
-                  )})
+                )})
+                  :
+                  null
             }
             </tbody>
           </table>
@@ -86,4 +101,4 @@ const Leaderboard = ({db=null}) => {
   );
 }
 
-export default Leaderboard;
+export default PastResults;

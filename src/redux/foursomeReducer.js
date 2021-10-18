@@ -7,7 +7,7 @@ const initState = {
 }
 
 const foursomeReducer = (state = initState, action) => {
-    const { pool, selected, foursome, currentPlayer } = state;
+    const { pool, selected, foursome } = state;
     const newPool = [...pool];
     const newFoursome = {...foursome};
     const newSelected = [...selected];

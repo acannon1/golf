@@ -8,18 +8,26 @@ const Tournament = ({db=null, tournament, isAdmin=false}) => {
     const [path, setPath] = useState("");
     const [title, setTitle] = useState("");
 
+    /*
+    Tournament states:
+        "Sign Up", "In Progress", "Done"
+    */
+
     useEffect(() => {
         if(tournament.status === "Sign Up") {
             setPath("/sign-up");
             setTitle("Sign Up");
-        } else if(tournament.status === "Ready to Start") {
-            setPath("/results");
-            setTitle("Ready to Start");
-        } else if(tournament.status === "In Progress") {
-            setPath("/results");
+        }
+        else if(tournament.status === "In Progress") {
+            setPath("/score-card");
             setTitle("In Progress");
-        } else{
-            setPath("./results");
+        }
+        else if(tournament.status === "Done") {
+            setPath("/results");
+            setTitle("Results");
+        }
+        else{
+            setPath("./none");
             setTitle("Results");
         }
     }, [])

@@ -14,7 +14,7 @@ const SelectFoursome = ({db, handleStartRound}) => {
         golfDbApi.getCurrentTournament(db)
           .then((data) => {
                 if(Object.keys(data).length !== 0) {
-                    newSignUpList = [... data.signUpList]
+                    newSignUpList = [...data.signUpList]
                     data.foursomes.map((foursome) => {
                         temp = foursome.split(",")
                         temp.map((name) => {

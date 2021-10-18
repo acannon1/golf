@@ -11,6 +11,7 @@ import CreateCourse from './CreateCourse.js';
 import CreateGolfer from './CreateGolfer.js';
 import CreateTournament from './CreateTournament.js';
 import Leaderboard from './Leaderboard.js';
+import PastResults from './PastResults.js';
 import RegisterUser from './RegisterUser.js';
 import {auth, firestore} from './Authorize/Support.js';
 import golfDbApi from './api/GolfDbApi.js';
@@ -99,6 +100,8 @@ function App() {
 
                   <Route path="/score-card"> <ScoreCard db={firestore} user={user2}/> </Route>
                   <Route path="/leaderboard"> <Leaderboard db={firestore}/> </Route>
+                  <Route path="/results"> <PastResults db={firestore}/> </Route>
+                  <Route path="/results"> <Leaderboard db={firestore}/> </Route>
                   {/* <Route path="/skins"> <Skins skins={skins}/> </Route> */}
                   <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
                   <Route path="/create-golfer"> <CreateGolfer db={firestore}/> </Route>

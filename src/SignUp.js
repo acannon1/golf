@@ -35,7 +35,7 @@ const SignUp = ({db=null, user={}}) => {
           return(
             <div key={idx}>
               <div>{tournament.date} @ {tournament.course}</div>
-              {tournament.signUpList.find(element => element == user.name) ? 
+              {tournament.signUpList.find(element => element === user.name) ? 
                 <button onClick={()=>handleWithdraw(tournament.date, idx)}>Widthdraw</button>
                 :
                 <button onClick={()=>handleSignUp(tournament.date, idx)}>Sign Up</button>

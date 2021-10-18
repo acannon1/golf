@@ -1,7 +1,7 @@
 import firebase from 'firebase/app';
 import axios from 'axios';
 
-const baseUrl = 'https://firestore.googleapis.com/v1/projects/golf-40e5a/databases/(default)';
+// const baseUrl = 'https://firestore.googleapis.com/v1/projects/golf-40e5a/databases/(default)';
 
 const golfDbApi = {
     async saveGrouping(db, date, grouping) {
@@ -199,7 +199,7 @@ const golfDbApi = {
             //Find document match to date
             if(doc.data().date === date) {
                 let updateScores = doc.data().scores;
-                updateScores = updateScores.[name].delete;
+                updateScores = updateScores[name].delete;
 
                 //Update sign-up list
                 db.collection('Tournaments').doc(doc.id)
@@ -290,28 +290,6 @@ const golfDbApi = {
         return temp;
     },
 
-    async getTournament(db, date, course) {
-        let data = {
-            "Course": course,
-            "Date": date,
-            "Results":{}
-        };
-
-        const snapshot = await db.collection('Tournaments')
-            .where("date", "==", date)
-            .get();
-
-        snapshot.docs.map((doc) => {
-            Object.keys(doc.data()).forEach(key => {
-                if((key !== 'course') && (key !== 'date') &&(key !== 'status') && (key !== 'signUpList')) {
-                    data.Results[key] = doc.data()[key];
-                }
-            });
-        });
-
-        return(data);
-    },
-
     async getFutureTournaments(db) {
         let tournaments = [];
         const snapshot = await db.collection('Tournaments')
@@ -385,7 +363,71 @@ const golfDbApi = {
             console.log("empty")
         }
         return(data);
-    }
+    },
+
+    async getLeaderBoard(db) {
+        let data = {};     
+        
+        const query = await db.collection("Tournaments").where("status", "==", "In Progress").get();
+        if(query.docs[0] !== undefined) {
+            data = query.docs[0].data();
+    
+            Object.keys(data.scores).map((key) => {
+                data.scores[key] = data.scores[key].split(",").map(Number);
+            });
+            
+            const birdieTotals = data.skins.reduce(function (acc, curr) {
+            return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+            }, {});                  
+    
+            const skinTotals = data.skins.reduce(function (acc, curr) {
+            return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+            }, {});
+    
+            data.birdieTotals = birdieTotals;
+            data.skinTotals = skinTotals;
+        }
+
+        const query2 = await db.collection("Courses").where("name", "==", data.course).get();
+        if(query2.docs[0] !== undefined) {
+            data.par = query2.docs[0].data().par;
+        }
+
+        return(data);
+    },
+
+    async getPastResults(db, date, course) {
+        let data = {};
+        const docID = date.replace(/[ ,.]/g, '') + course.replace(/[ ]/g, '').substring(0,5);
+        
+        const query = await db.collection('Tournaments').doc(docID).get();
+
+        if (!query.empty) {
+            data = query.data();
+    
+            Object.keys(data.scores).map((key) => {
+                data.scores[key] = data.scores[key].split(",").map(Number);
+            });
+            
+            const birdieTotals = data.skins.reduce(function (acc, curr) {
+            return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+            }, {});                  
+    
+            const skinTotals = data.skins.reduce(function (acc, curr) {
+            return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+            }, {});
+    
+            data.birdieTotals = birdieTotals;
+            data.skinTotals = skinTotals;
+        }
+
+        const query2 = await db.collection("Courses").where("name", "==", data.course).get();
+        if(query2.docs[0] !== undefined) {
+            data.par = query2.docs[0].data().par;
+        }
+
+        return(data);
+      }
 }
 
 export default golfDbApi;
