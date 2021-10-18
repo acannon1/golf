@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import IndivHole from './IndivHole.js';
 import './Golf.css';   
     
-const IndivScoreCard = ({player="", par, scores, handleHoleScore}) => {
+const IndivScoreCard = ({player="", par, scores, handleScoreCard}) => {
 
     const [scores2, setScores2] = useState([]);
 
@@ -11,18 +11,16 @@ const IndivScoreCard = ({player="", par, scores, handleHoleScore}) => {
     }, [])
 
     const handleSelectScore = (e, hole) => {
-        const tempScore = scores;
+        const tempScore = [...scores];
         tempScore[hole] = e.value;
         tempScore[18] = tempScore.reduce((a, b) => a + b, 0) - tempScore[18];
-        console.log(tempScore)
         setScores2(tempScore);
 
-        handleHoleScore(player, hole, e.value);
+        handleScoreCard(player, tempScore);
     }
 
     return(
         <div id="player-score-card">
-            {console.log(scores2)}
             <div className="name"> {player} </div>
             {
                 scores2 !== undefined ?

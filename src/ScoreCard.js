@@ -7,7 +7,6 @@ import './Golf.css';
 
 const ScoreCard = ({db=null, user=null}) => {
 
-  const [par, setPar] = useState([4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,72]);
   const [tournament, setTournament] = useState({}); //holds the scores
   //Just holds the names for reference to tournament object
   const [foursome, setFoursome] = useState([]);
@@ -30,13 +29,10 @@ const ScoreCard = ({db=null, user=null}) => {
       });
   }, [])
 
-  const handleScore = (player, hole, score) => {
-    const tempScore = tournament['scores'][player];
-    tempScore[hole]=score;
-    tempScore[18] = tempScore.reduce((a, b) => a + b, 0) - tempScore[18];
-    tournament['scores'][player] = tempScore.join(",");
+  const handleScore = (player, scoreCard) => {
+    tournament['scores'][player] = scoreCard.join(",");
     setTournament(tournament)    
-    golfDbApi.saveScoreRealTime(db,tournament.date,player,tournament['scores'][player])
+    golfDbApi.saveScoreRealTime(db, tournament.date, player, tournament['scores'][player])
   }
 
   const handleStartRound = (names) => {
@@ -70,9 +66,9 @@ const ScoreCard = ({db=null, user=null}) => {
                   <IndivScoreCard
                     key={idx}
                     player={player}
-                    par={par}
+                    par={tournament.par}
                     scores={tournament['scores'][player]}
-                    handleHoleScore={handleScore}
+                    handleScoreCard={handleScore}
                   />
                 )
               })
