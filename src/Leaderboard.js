@@ -28,7 +28,9 @@ const Leaderboard = ({db=null}) => {
                 <th></th>
                 {
                   results.par.map((score, idx) => {
-                    return( <th key={idx}>{idx+1}</th> )
+                    if (idx < 18) {
+                      return( <th key={idx}>{idx+1}</th> )
+                    }
                   })
                 }
                 <th>Tot</th>
@@ -41,11 +43,10 @@ const Leaderboard = ({db=null}) => {
                 <td>Par</td>
                 {
                   results.par.map((score, idx) => {
-                    total += score
+                    // total += score
                     return( <td key={idx}>{score}</td> )
                   })
                 }
-                <td>{total}</td>
                 <td></td>
                 <td></td>
               </tr>
@@ -60,12 +61,13 @@ const Leaderboard = ({db=null}) => {
                                     <td key={idx}>
                                       <div 
                                         className=
-                                          {score < results.par[index] ?
-                                            score !== 0 ? 
-                                              (results.skins[idx] === player ? "leader-board red skin" : "leader-board red") : 
-                                              null
-                                          :
+                                          {idx < 18 ?                                            
+                                            score < results.par[idx] ?
+                                              (results.skins[idx] === player ? "leader-board red skin" : "leader-board red")  
+                                            :
                                             results.skins[idx] === player ? "leader-board skin" : null
+                                          :
+                                          null
                                           }
                                         >
                                         {score !== 0 ? score : null}

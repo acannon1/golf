@@ -14,7 +14,7 @@ const ScoreCard = ({db=null, user=null}) => {
   const [startRound, setStartRound] = useState(false);
 
   useEffect(() => {
-    golfDbApi.getCurrentTournament(db)
+    golfDbApi.getLeaderBoard(db)
       .then((data) => {
         if(Object.keys(data).length !== 0) {
           if(Object.keys(user).length > 0) {
@@ -31,8 +31,9 @@ const ScoreCard = ({db=null, user=null}) => {
   }, [])
 
   const handleScore = (player, hole, score) => {
-    const tempScore = tournament['scores'][player].split(",").map(Number);
+    const tempScore = tournament['scores'][player];
     tempScore[hole]=score;
+    tempScore[18] = tempScore.reduce((a, b) => a + b, 0) - tempScore[18];
     tournament['scores'][player] = tempScore.join(",");
     setTournament(tournament)    
     golfDbApi.saveScoreRealTime(db,tournament.date,player,tournament['scores'][player])
@@ -61,7 +62,7 @@ const ScoreCard = ({db=null, user=null}) => {
         :
         <div className="score-card">
           <div> Round in Progress </div>
-          <ParHeader par={par}/>
+          <ParHeader par={tournament.par}/>
           {
             tournament['scores'] !== undefined ?
               foursome.map((player, idx) => {
@@ -70,7 +71,7 @@ const ScoreCard = ({db=null, user=null}) => {
                     key={idx}
                     player={player}
                     par={par}
-                    scores={tournament['scores'][player].split(',').map(Number)}
+                    scores={tournament['scores'][player]}
                     handleHoleScore={handleScore}
                   />
                 )
