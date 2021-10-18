@@ -13,7 +13,7 @@ const SelectFoursome = ({db, handleStartRound}) => {
         let newSignUpList = [];
         golfDbApi.getCurrentTournament(db)
           .then((data) => {
-                if(Object.keys(data).length !== 0) {
+                if (Object.keys(data).length !== 0) {
                     newSignUpList = [...data.signUpList]
                     data.foursomes.map((foursome) => {
                         temp = foursome.split(",")
@@ -50,12 +50,12 @@ const SelectFoursome = ({db, handleStartRound}) => {
     }
 
     const handleStart = () => {
-      if(selected.length > 0) {
+      if (selected.length > 0) {
         handleStartRound(selected)
       }
     }
 
-    return(
+    return (
         <div className="player-pool">
             <button onClick={handleStart}> Start Round </button>
             <div className="player-pool-container">
@@ -63,7 +63,7 @@ const SelectFoursome = ({db, handleStartRound}) => {
                     <div className="select-titles">Select Players:</div>
                     {
                         pool.map((player, idx) => {
-                            return(
+                            return (
                                 <div key={idx} className="names" onClick={() => selectPlayer(player)}>
                                     {player}
                                 </div>
@@ -75,7 +75,7 @@ const SelectFoursome = ({db, handleStartRound}) => {
                     <div className="select-titles">Foursome:</div>
                     {
                         selected.map((player, idx) => {
-                            return(
+                            return (
                                 <div key={idx} className="names" onClick={() => deSelectPlayer(player)}>
                                     {player}
                                 </div>

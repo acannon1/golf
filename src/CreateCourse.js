@@ -11,7 +11,7 @@ const CreateCourse = ({db=null}) => {
         golfDbApi.createCourse(db, name, location, rating, slope);
     }
 
-    return(
+    return (
         <div className="create-course">
             <h3> Create Course </h3>
             <div>

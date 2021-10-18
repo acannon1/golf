@@ -1,7 +1,15 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import golfDbApi from './api/GolfDbApi.js';
 import './PlayersPage.css';
 
-const PlayerPage = ({players}) => {
+const PlayerPage = ({db}) => {
+    const [golfers, setGolfers] = useState([])
+
+    useEffect(() => {
+        golfDbApi.getGolfers(db)
+            .then((data) => setGolfers(data));
+    }, [])
+
   return (
     <div id="players-page" className="players-container">
         <h3> Tour Players </h3>
@@ -17,14 +25,14 @@ const PlayerPage = ({players}) => {
                 </tr>
             </thead>
             <tbody className="players-table-body">
-                {players.map((player, idx) => {
-                    return(
+                {golfers.map((golfer, idx) => {
+                    return (
                         <tr key={idx} className="players-table-row">
                             <td>{idx+1}</td>
-                            <td><a href="\"> {player.name} </a></td>
-                            <td>{player.numOfEvents}</td>
-                            <td>{player.handicap}</td>
-                            <td>{player.winnings}</td>
+                            <td><a href="\"> {golfer.name} </a></td>
+                            <td>{golfer.numOfEvents}</td>
+                            <td>{golfer.handicap}</td>
+                            <td>{golfer.winnings}</td>
                         </tr>
                     )
                 })}

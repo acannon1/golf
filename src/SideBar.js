@@ -3,10 +3,8 @@ import { Link } from "react-router-dom";
 import './Golf.css';
 
 const SideBar = ({isAdmin}) => {
-    // const isAdmin = useSelector((state) => state.isAdmin);
-    // const [isAdmin, setIsAdmin] = useState(true);
 
-    return(        
+    return (        
         <div className="side-nav">
             <ul className="nav-links">
                 <li>

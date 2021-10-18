@@ -12,12 +12,12 @@ const accountManagement = {
         .catch((error) => {
           console.log(error.message)
         })
-        return(result);
+        return (result);
     },
   
     async logIn(auth, email, password) {
       const snapshot = await auth.signInWithEmailAndPassword(email, password)
-      return(snapshot);
+      return (snapshot);
     },
 
     async logOut(auth) {
@@ -28,7 +28,7 @@ const accountManagement = {
       console.log("handle auth");
       const user = auth.currentUser();
       console.log("current user = " + user);
-      if(user) {
+      if (user) {
         auth.signOut(user)
           .then((result) => {
             console.log(result)

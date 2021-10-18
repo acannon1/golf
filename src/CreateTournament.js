@@ -20,7 +20,7 @@ const CreateTournament = ({db=null, courses=[]}) => {
     })
 
     const handleSubmit = () => {
-        if(course !== '') {
+        if (course !== '') {
             golfDbApi.createTournament(db, moment(selectedDate).format("MMMM  D, YYYY"), course);
         }
     }
@@ -30,7 +30,7 @@ const CreateTournament = ({db=null, courses=[]}) => {
         setCourse('');
     }
 
-    return(
+    return (
         <div className="create-course">
             <h3> Create Tournament </h3>
             <div>

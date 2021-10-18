@@ -9,7 +9,7 @@ const CreateGolfer = ({db=null}) => {
     const [numOfEvents, setNumOfEvents] = useState('');
 
     const handleSubmit = () => {
-        if(email !== '') {
+        if (email !== '') {
             golfDbApi.createGolfer(db, email, admin, name, handicap, numOfEvents);
         }
     }
@@ -22,7 +22,7 @@ const CreateGolfer = ({db=null}) => {
         setNumOfEvents('');
     }
 
-    return(
+    return (
         <div className="create-course">
             <h3> Create Golfer </h3>
             <div>

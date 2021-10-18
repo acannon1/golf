@@ -8,29 +8,29 @@ const Tournaments = ({db, isAdmin=false}) => {
     const [tournaments, setTournaments] = useState([])
     
     useEffect(() => {
-      golfDbApi.getTournaments(db)
-        .then((data) => setTournaments(data));
+        golfDbApi.getTournaments(db)
+            .then((data) => setTournaments(data));
     }, [])
 
-     return (
+    return (
         <div className="tournaments-page">
-        <h3> Tournaments </h3>
-        <table>
-            <tbody>
-            {
-                tournaments.map((tournament, idx) => {
-                    return (
-                        <Tournament
-                            key={idx}
-                            tournament={tournament}
-                            isAdmin={isAdmin}
-                            db={db}
-                        />
-                    )
-                })
-            }
-            </tbody>
-        </table>
+            <h3> Tournaments </h3>
+            <table>
+                <tbody>
+                {
+                    tournaments.map((tournament, idx) => {
+                        return (
+                            <Tournament
+                                key={idx}
+                                tournament={tournament}
+                                isAdmin={isAdmin}
+                                db={db}
+                            />
+                        )
+                    })
+                }
+                </tbody>
+            </table>
         </div>
     );
 }

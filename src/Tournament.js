@@ -14,15 +14,15 @@ const Tournament = ({db=null, tournament, isAdmin=false}) => {
     */
 
     useEffect(() => {
-        if(tournament.status === "Sign Up") {
+        if (tournament.status === "Sign Up") {
             setPath("/sign-up");
             setTitle("Sign Up");
         }
-        else if(tournament.status === "In Progress") {
+        else if (tournament.status === "In Progress") {
             setPath("/score-card");
             setTitle("In Progress");
         }
-        else if(tournament.status === "Done") {
+        else if (tournament.status === "Done") {
             setPath("/results");
             setTitle("Results");
         }

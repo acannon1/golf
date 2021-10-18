@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import Select from 'react-select';
 import './Golf.css';   
     
@@ -15,7 +15,7 @@ const IndivHole = ({index, par, score, handleSelectScore}) => {
         {label: 8, value: 8}
     ];
 
-    return(
+    return (
         <div id="individual-hole">
             <div className="indiv-score-block">
                 {index !== 18 ?

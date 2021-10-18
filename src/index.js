@@ -8,9 +8,9 @@ import foursomeReducer from './redux/FoursomeReducer.js';
 const store = createStore(foursomeReducer)
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
+    <Provider store={store}>
+        <App />
+    </Provider>,
+    document.getElementById('root')
 );
 

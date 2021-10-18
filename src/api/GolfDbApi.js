@@ -168,7 +168,7 @@ const golfDbApi = {
         //Map thru each document
         snapshot.docs.map((doc) => {
             //Find document match to date
-            if(doc.data().date === date) {
+            if (doc.data().date === date) {
                 let updateScores = doc.data().scores;
                 updateScores[name] = "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";                
 
@@ -197,7 +197,7 @@ const golfDbApi = {
         //Map thru each document
         snapshot.docs.map((doc) => {
             //Find document match to date
-            if(doc.data().date === date) {
+            if (doc.data().date === date) {
                 let updateScores = doc.data().scores;
                 updateScores = updateScores[name].delete;
 
@@ -240,7 +240,7 @@ const golfDbApi = {
 
     async getGolferInfo(db, user){
         const snapshot = await db.collection('Golfers').doc(user).get();
-        return(snapshot.data())
+        return (snapshot.data())
     },
 
     async getGolfers (db) {
@@ -270,7 +270,7 @@ const golfDbApi = {
         let tournament = {};
         const snapshot = await db.collection('Tournaments').get();
         snapshot.docs.map((doc) => {
-            if((doc.data().status === "In Progress") ||
+            if ((doc.data().status === "In Progress") ||
                (doc.data().status === "Ready to Start")) {
                 tournament = doc.data();
             }
@@ -296,8 +296,6 @@ const golfDbApi = {
             .where("status", "==", "Sign Up")
             .get();
         snapshot.docs.map((doc) => {
-            // let temp = doc.data();
-            // temp["date"] = doc.id;
             tournaments.push(doc.data())
         });
         return tournaments;
@@ -323,12 +321,12 @@ const golfDbApi = {
 
         if (!query.empty) {
             const snapshot = query.docs[0];
-            return(snapshot.data()[player])
+            return (snapshot.data()[player])
         } else {
             console.log("empty")
         }
         
-        return([]);
+         return ([]);
     },
 
     async getRealTimeScores(db) {        
@@ -343,13 +341,12 @@ const golfDbApi = {
             .where("status", "==", "In Progress")
             .get()
 
-        if(!query.empty) {
+        if (!query.empty) {
             const snapshot = query.docs[0];
-            console.log(snapshot.data())
             data.Course = snapshot.data().course;
             data.Date = snapshot.data().date;
             Object.keys(snapshot.data()).forEach(key => {
-                if((key !== 'course') && (key !== 'date') && (key !== 'status') &&
+                if ((key !== 'course') && (key !== 'date') && (key !== 'status') &&
                   (key !== 'signUpList') && (key !== 'foursomes') && (key !== 'scores')) {
                     data.Results[key] = snapshot.data()[key];
                 }
@@ -362,14 +359,14 @@ const golfDbApi = {
         } else {
             console.log("empty")
         }
-        return(data);
+        return (data);
     },
 
     async getLeaderBoard(db) {
         let data = {};     
         
         const query = await db.collection("Tournaments").where("status", "==", "In Progress").get();
-        if(query.docs[0] !== undefined) {
+        if (query.docs[0] !== undefined) {
             data = query.docs[0].data();
     
             Object.keys(data.scores).map((key) => {
@@ -377,11 +374,11 @@ const golfDbApi = {
             });
             
             const birdieTotals = data.skins.reduce(function (acc, curr) {
-            return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+                return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
             }, {});                  
     
             const skinTotals = data.skins.reduce(function (acc, curr) {
-            return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+                return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
             }, {});
     
             data.birdieTotals = birdieTotals;
@@ -389,11 +386,11 @@ const golfDbApi = {
         }
 
         const query2 = await db.collection("Courses").where("name", "==", data.course).get();
-        if(query2.docs[0] !== undefined) {
+        if (query2.docs[0] !== undefined) {
             data.par = query2.docs[0].data().par;
         }
 
-        return(data);
+        return (data);
     },
 
     async getPastResults(db, date, course) {
@@ -410,11 +407,11 @@ const golfDbApi = {
             });
             
             const birdieTotals = data.skins.reduce(function (acc, curr) {
-            return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+                return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
             }, {});                  
     
             const skinTotals = data.skins.reduce(function (acc, curr) {
-            return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
+                return acc[curr] ? ++acc[curr] : acc[curr] = 1, acc
             }, {});
     
             data.birdieTotals = birdieTotals;
@@ -422,11 +419,11 @@ const golfDbApi = {
         }
 
         const query2 = await db.collection("Courses").where("name", "==", data.course).get();
-        if(query2.docs[0] !== undefined) {
+        if (query2.docs[0] !== undefined) {
             data.par = query2.docs[0].data().par;
         }
 
-        return(data);
+        return (data);
       }
 }
 

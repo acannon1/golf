@@ -7,85 +7,86 @@ const Leaderboard = ({db=null}) => {
 
     useEffect(() => {
       golfDbApi.getLeaderBoard(db)
-        .then((data) => {
-          setResults(data);
-        })
+            .then((data) => {
+                setResults(data);
+            })
     }, {})
 
-
-  var total = 0;
-  return (
-    <div id="leader-board">
-      {Object.keys(results).length===0 ? 
-        null
-      :
-        <div>
-          <h2> {results.course}</h2>
-          <h4> {results.date}</h4>
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                {
-                  results.par.map((score, idx) => {
-                    if (idx < 18) {
-                      return( <th key={idx}>{idx+1}</th> )
+    return (
+        <div id="leader-board">
+        {Object.keys(results).length===0 ? 
+            null
+        :
+            <div>
+            <h2> {results.course}</h2>
+            <h4> {results.date}</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th> Hole </th>
+                        {
+                            results.par.map((score, idx) => {
+                                if (idx < 18) {
+                                    return ( <th key={idx}>{idx+1}</th> )
+                                }
+                            })
+                        }
+                        <th>Tot</th>
+                        <th>Skins</th>
+                        <th>Birdies</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Par</td>
+                    {
+                    results.par.map((score, idx) => {
+                        return ( <td key={idx}>{score}</td> )
+                    })
                     }
-                  })
-                }
-                <th>Tot</th>
-                <th>Skins</th>
-                <th>Birdies</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Par</td>
+                    <td></td>
+                    <td></td>
+                </tr>
                 {
-                  results.par.map((score, idx) => {
-                    // total += score
-                    return( <td key={idx}>{score}</td> )
-                  })
+                    Object.keys(results.scores).map((player, index) => {
+                    return (
+                        <tr  key={index}>
+                            <td> {player} </td>
+                            {
+                                results.scores[player].map((score, idx) => {
+                                    return (
+                                        <td key={idx}>
+                                            <div 
+                                                className=
+                                                    {idx < 18 ?                                            
+                                                        score < results.par[idx] ?
+                                                        (results.skins[idx] === player ?
+                                                            "leader-board red skin" :
+                                                            "leader-board red")
+                                                        :
+                                                        results.skins[idx] === player ?
+                                                            "leader-board skin" : null
+                                                    :
+                                                    null
+                                                    }
+                                            >
+                                                {score !== 0 ? score : null}
+                                            </div>
+                                        </td>
+                                    )
+                                })
+                            }
+                            <td> {results.skinTotals[player]} </td>
+                            <td> {results.birdieTotals[player]} </td>
+                        </tr>
+                    )})
                 }
-                <td></td>
-                <td></td>
-              </tr>
-            {
-                Object.keys(results.scores).map((player, index) => {
-                  return(
-                      <tr  key={index}>
-                          <td> {player} </td>
-                          {
-                              results.scores[player].map((score, idx) => {
-                                  return(
-                                    <td key={idx}>
-                                      <div 
-                                        className=
-                                          {idx < 18 ?                                            
-                                            score < results.par[idx] ?
-                                              (results.skins[idx] === player ? "leader-board red skin" : "leader-board red")  
-                                            :
-                                            results.skins[idx] === player ? "leader-board skin" : null
-                                          :
-                                          null
-                                          }
-                                        >
-                                        {score !== 0 ? score : null}
-                                      </div>
-                                    </td>)
-                              })
-                          }
-                          <td> {results.skinTotals[player]} </td>
-                          <td> {results.birdieTotals[player]} </td>
-                      </tr>
-                  )})
-            }
-            </tbody>
-          </table>
+                </tbody>
+            </table>
+            </div>
+        }
         </div>
-      }
-    </div>
-  );
+    );
 }
 
 export default Leaderboard;

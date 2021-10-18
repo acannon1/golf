@@ -15,8 +15,8 @@ const foursomeReducer = (state = initState, action) => {
     switch (action.type) {
         case 'INIT_POOL':      
             return {
-              ...state,
-              pool: action.payload,
+                ...state,
+                pool: action.payload,
             };
 
         case 'SELECT_PLAYER':
@@ -25,22 +25,22 @@ const foursomeReducer = (state = initState, action) => {
             newPool.splice(action.payload, 1);
 
             return {
-              ...state,
-              pool: newPool,
-              selected: newSelected,
-              foursome: newFoursome
+                ...state,
+                pool: newPool,
+                selected: newSelected,
+                foursome: newFoursome
             };
             
         case 'DESELECT_PLAYER':    
             delete newFoursome[selected[action.payload]];
             newSelected.splice(action.payload, 1);
-            newPool.push(selected[action.payload])
+            newPool.push(selected[action.payload]);
       
             return {
-              ...state,
-              pool: newPool,
-              selected: newSelected,
-              foursome: newFoursome
+                ...state,
+                pool: newPool,
+                selected: newSelected,
+                foursome: newFoursome
             };
             
         case 'START_ROUND':
@@ -55,7 +55,7 @@ const foursomeReducer = (state = initState, action) => {
             newFoursome[player][hole] = score;
             let total = 0;
             newFoursome[player].map((score, idx) => {
-                if(idx !== 18) {
+                if (idx !== 18) {
                     total += score;
                 }
             })

@@ -13,7 +13,7 @@ const SelectPlayer = ({foursome=[], changePlayer}) => {
         setOptGolfers(items)
     }, [])
 
-    return(
+    return (
         <div className="select-player">
             <div className="score-card-select-player">
                 <Select options={ optGolfers } onChange={e=>changePlayer(e.label)}/>

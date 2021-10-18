@@ -10,9 +10,9 @@ const RegisterUser = ({auth=null, db=null, successfullLogin}) => {
 
 
     const handleLogIn = async () => {
-        if((email !== '') && (password !== '')) {
+        if ((email !== '') && (password !== '')) {
             accountManagement.logIn(auth, email.trim(), password)
-                .then(() => {
+                .then((response) => {
                     successfullLogin(true, email)
                 })
                 .catch((error) => { console.log(error) })
@@ -21,7 +21,7 @@ const RegisterUser = ({auth=null, db=null, successfullLogin}) => {
 
     const handleRegisterUser = () => {
         let loggedIn = false
-        if((email !== '') && (password !== '')) {
+        if ((email !== '') && (password !== '')) {
             loggedIn = accountManagement.registerUser(auth, email.trim(), password);
         }
         if (loggedIn) {
@@ -39,16 +39,11 @@ const RegisterUser = ({auth=null, db=null, successfullLogin}) => {
         setPassword('');
     }
     
-    return(
+    return (
         <div className="create-course">
-            {!signUp ? 
-                <h3> Welcome to the STGA. Please log in. </h3>
-                :
-                <h3> Register User </h3>
-            }
-
             {signUp ?
                 <div>
+                    <h3> Register User </h3>
                     <label > Name: </label><br/>
                     <input 
                         className="create-course-field"
@@ -57,7 +52,10 @@ const RegisterUser = ({auth=null, db=null, successfullLogin}) => {
                         value={name}
                     />
                 </div>
-                : null
+                :
+                <div>
+                    <h3> Welcome to the STGA. Please log in. </h3>
+                </div>
             }
             <div>
                 <label> Email: </label><br/>

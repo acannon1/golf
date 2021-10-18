@@ -19,13 +19,13 @@ const IndivScoreCard = ({player="", par, scores, handleScoreCard}) => {
         handleScoreCard(player, tempScore);
     }
 
-    return(
+    return (
         <div id="player-score-card">
             <div className="name"> {player} </div>
             {
                 scores2 !== undefined ?
                     scores2.map((score, idx) => {
-                        return(
+                        return (
                             <IndivHole
                                 key={idx}
                                 index={idx}
