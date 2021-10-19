@@ -17,7 +17,6 @@ import {auth, firestore} from './Authorize/Support.js';
 import './App.css';
 
 function App() {
-    const [loginStatus, setLoginStatus] = useState(false);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -25,13 +24,11 @@ function App() {
 
         if (obj !== null) {
             setUser(obj);
-            setLoginStatus(true);
         }
     }, [])
 
     const successfullLogin = (result) => {
         setUser(result);
-        setLoginStatus(true);
         sessionStorage.setItem('user', JSON.stringify(result));
     }
 
@@ -39,7 +36,6 @@ function App() {
         try {
             await auth.signOut();
             setUser(null);
-            setLoginStatus(false);
             sessionStorage.removeItem('user');
         } catch(error) {
             console.log(error.message);
@@ -54,7 +50,7 @@ function App() {
                 auth={auth}
                 signOut={signOut}
             />
-            {loginStatus === false ?
+            {!user ?
                 <div className="log-in">
                 <RegisterUser
                     auth={auth}
