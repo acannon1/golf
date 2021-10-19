@@ -12,8 +12,14 @@ const RegisterUser = ({auth=null, db=null, successfullLogin}) => {
     const handleLogIn = async () => {
         if ((email !== '') && (password !== '')) {
             accountManagement.logIn(auth, email.trim(), password)
-                .then((response) => {
-                    successfullLogin(true, email)
+                .then(() => {
+                    // console.log(response)
+                    golfDbApi.getGolferInfo(db, email)
+                        .then((data) => {
+                            // setUser(data);
+                            // console.log(data)
+                            successfullLogin(data)
+                    })
                 })
                 .catch((error) => { console.log(error) })
         }

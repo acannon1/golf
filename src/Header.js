@@ -1,13 +1,13 @@
 import React from 'react';
 import './Golf.css';
 
-const Header = ({userEmail, signOut}) => {
+const Header = ({user, signOut}) => {
   return (
     <header id="stga-header" className="container-header">
         <div className="stga-title">STGA Tour</div>
-        {userEmail !== null ?      
+        {user !== null ?      
             <div className="sign-out-btn">
-                <div className="userEmail"> {userEmail} </div>
+                <div className="userEmail"> {user.email} </div>
                 <button onClick={signOut}> Sign Out </button>
                 {/* {(Object.keys(user2).length === 0 && user2.constructor === Object) ?
                 null :

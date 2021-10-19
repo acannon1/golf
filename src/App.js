@@ -14,43 +14,33 @@ import Leaderboard from './Leaderboard.js';
 import PastResults from './PastResults.js';
 import RegisterUser from './RegisterUser.js';
 import {auth, firestore} from './Authorize/Support.js';
-import golfDbApi from './api/GolfDbApi.js';
 import './App.css';
 
 function App() {
-    const [loginStatus, setLoginStatus] = useState(false)
-    const [userEmail, setUserEmail] = useState(null)  
-    const [user, setUser] = useState({});
-    const [courses, setCourses] = useState([]);
-    const [admin, setAdmin] = useState(false)
+    const [loginStatus, setLoginStatus] = useState(false);
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
-        if (loginStatus) {
-        console.log("loginStatus = true")
-        golfDbApi.getCourses(firestore)
-            .then((data) => setCourses(data));
-        } else {
-        console.log("loginStatus = false")
+        let obj = JSON.parse(sessionStorage.getItem('user'));
+
+        if (obj !== null) {
+            setUser(obj);
+            setLoginStatus(true);
         }
     }, [])
 
-    const successfullLogin = (val1, val2) => {
-        setLoginStatus(val1);
-        setUserEmail(val2);
-        golfDbApi.getGolferInfo(firestore, val2)
-            .then((data) => {
-                setUser(data)
-                setAdmin(data.admin)
-        })
-        golfDbApi.getCourses(firestore)
-            .then((data) => setCourses(data));
+    const successfullLogin = (result) => {
+        setUser(result);
+        setLoginStatus(true);
+        sessionStorage.setItem('user', JSON.stringify(result));
     }
 
     const signOut = async () => {
         try {
             await auth.signOut();
-            setUserEmail(null)
-            setLoginStatus(false)
+            setUser(null);
+            setLoginStatus(false);
+            sessionStorage.removeItem('user');
         } catch(error) {
             console.log(error.message);
         }
@@ -60,7 +50,7 @@ function App() {
         <Router>
         <div className="app-container">
             <Header
-                userEmail={userEmail}
+                user={user}
                 auth={auth}
                 signOut={signOut}
             />
@@ -70,26 +60,25 @@ function App() {
                     auth={auth}
                     db={firestore}
                     successfullLogin={successfullLogin}
-                    setAdmin={setAdmin}
                 />
                 </div>
                 :             
                 <div>
-                <SideBar isAdmin={admin}/>
+                <SideBar isAdmin={user ? user.admin : false}/>
                 <div className="temp">
                     <Switch>
-                    <Route path="/players"> <PlayerPage db={firestore}/> </Route>
-                    <Route path="/tournaments"> <Tournaments db={firestore} isAdmin={admin}/> </Route>
-                    <Route path="/score-card"> <ScoreCard db={firestore} user={user}/> </Route>
-                    <Route path="/leaderboard"> <Leaderboard db={firestore}/> </Route>
-                    <Route path="/results"> <PastResults db={firestore}/> </Route>
-                    <Route path="/results"> <Leaderboard db={firestore}/> </Route>
-                    <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
-                    <Route path="/create-golfer"> <CreateGolfer db={firestore}/> </Route>
-                    <Route path="/create-tournament"> <CreateTournament db={firestore} courses={courses}/> </Route>
-                    <Route path="/sign-up"> <SignUp db={firestore} user={user}/> </Route>
-                    <Route path="/"> <Home db={firestore}/> </Route>
-                    {/* <Route component={} /> */}
+                        <Route path="/players"> <PlayerPage db={firestore}/> </Route>
+                        <Route path="/tournaments"><Tournaments db={firestore} isAdmin={user ? user.admin : false}/> </Route>
+                        <Route path="/score-card"> <ScoreCard db={firestore} user={user}/> </Route>
+                        <Route path="/leaderboard"> <Leaderboard db={firestore}/> </Route>
+                        <Route path="/results"> <PastResults db={firestore}/> </Route>
+                        <Route path="/results"> <Leaderboard db={firestore}/> </Route>
+                        <Route path="/create-course"> <CreateCourse db={firestore}/> </Route>
+                        <Route path="/create-golfer"> <CreateGolfer db={firestore}/> </Route>
+                        <Route path="/create-tournament"> <CreateTournament db={firestore}/> </Route>
+                        <Route path="/sign-up"> <SignUp db={firestore} user={user}/> </Route>
+                        <Route path="/"> <Home db={firestore}/> </Route>
+                        {/* <Route component={} /> */}
                     </Switch>
                 </div>
                 </div>

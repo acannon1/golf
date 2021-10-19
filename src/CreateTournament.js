@@ -11,13 +11,19 @@ import golfDbApi from './api/GolfDbApi.js';
 const CreateTournament = ({db=null, courses=[]}) => {
     const [course, setCourse] = useState('');
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const optCourse=[];
+    const [optCourse, setOptCourse] = useState([])
+    // const optCourse=[];
 
     useEffect(() => {
-        courses.map((course, idx) => {
-            optCourse.push({label: course.name, value: idx+1});
-        })
-    })
+        const temp = [];
+        golfDbApi.getCourses(db)
+            .then((data) => {
+                data.map((course, idx) => {
+                    temp.push({label: course.name, value: idx+1});
+                })
+            });
+        setOptCourse(temp)
+    }, [])
 
     const handleSubmit = () => {
         if (course !== '') {
